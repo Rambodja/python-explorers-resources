@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Python Explorers | Book 1</title>
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0c1020;
+  color: white;
+}
+
+header {
+  text-align: center;
+  padding: 70px 20px;
+  background: linear-gradient(135deg, #24103c, #15284a);
+}
+
+h1 {
+  font-size: clamp(36px, 7vw, 64px);
+  color: #71e8f0;
+  margin: 12px 0;
+}
+
+h2 { color: #f77bdd; }
+
+.subtitle {
+  font-size: 21px;
+  color: #d3daef;
+}
+
+.tag {
+  color: #f77bdd;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 14px 25px;
+  background: #71e8f0;
+  color: #101827;
+  text-decoration: none;
+  border-radius: 12px;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.btn:hover { background: #a4faff; }
+
+main {
+  max-width: 1100px;
+  margin: auto;
+  padding: 35px 20px;
+}
+
+.intro { text-align: center; }
+
+.grid {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(230px, 1fr));
+  gap: 18px;
+  margin-top: 30px;
+}
+
+.card {
+  background: #19223b;
+  border: 1px solid #3b4769;
+  border-radius: 17px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover { border-color: #71e8f0; }
+
+.number {
+  color: #71e8f0;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.card h3 {
+  font-size: 19px;
+  margin-bottom: 10px;
+}
+
+.card p {
+  color: #b8c5dd;
+  font-size: 14px;
+  flex: 1;
+}
+
+.card a {
+  display: block;
+  text-align: center;
+  background: #71e8f0;
+  padding: 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #101827;
+  font-weight: bold;
+}
+
+.soon {
+  display: block;
+  text-align: center;
+  padding: 12px;
+  border-radius: 10px;
+  background: #323d58;
+  color: #aebbd0;
+}
+
+footer {
+  text-align: center;
+  padding: 35px;
+  border-top: 1px solid #3b4769;
+  color: #b8c5dd;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <p class="tag">🐍 PYTHON EXPLORERS</p>
+  <h1>WELCOME, EXPLORER!</h1>
+  <p class="subtitle">Book 1 — Interactive Learning Hub</p>
+  <p>Learn. Play. Solve. Explore.</p>
+  <a class="btn" href="Lesson_1.html">
+    🚀 Start Lesson 1
+  </a>
+</header>
+
+<main>
+  <section class="intro">
+    <h2>🎮 Choose Your Lesson</h2>
+    <p>
+      Explore coding quizzes, mini-games and
+      debugging challenges inspired by your book.
+    </p>
+    <p>New activities will appear here as they're released!</p>
+  </section>
+
+  <div class="grid" id="lessons"></div>
+</main>
+
+<footer>
+  <h2>🐍 Python Explorers</h2>
+  <p>Created by Rambod Jafari Nasab</p>
+  <p>Book 1 | Learn • Try • Build</p>
+</footer>
+
+<script>
+const lessons = [
+  "Your First Python Program",
+  "Variables, Types and User Input",
+  "Choices and Operators",
+  "Build a Simple Calculator",
+  "Loops and range()",
+  "While Loops and Loop Control",
+  "Nested Loops and ASCII",
+  "Build a Number Guessing Game",
+  "Python Libraries and Turtle",
+  "More Turtle Drawing",
+  "Time, Maths and Number Bases",
+  "Rotating Squares Project",
+  "Getting Started with Lists",
+  "Everyday List Methods",
+  "More Powerful List Techniques",
+  "Student Records Project",
+  "Understanding Strings",
+  "Seventeen Useful String Methods",
+  "Handling Common Errors",
+  "Dictionaries",
+  "Turtle Logo Studio"
+];
+
+const container = document.getElementById("lessons");
+
+lessons.forEach((name, index) => {
+  const number = index + 1;
+  const card = document.createElement("article");
+  card.className = "card";
+
+  const label = document.createElement("div");
+  label.className = "number";
+  label.textContent =
+    "LESSON " + String(number).padStart(2, "0");
+
+  const title = document.createElement("h3");
+  title.textContent = name;
+
+  const description = document.createElement("p");
+  description.textContent =
+    number === 1
+      ? "Try interactive Python challenges!"
+      : "Interactive activities coming soon.";
+
+  card.append(label, title, description);
+
+  if (number === 1) {
+    const link = document.createElement("a");
+    link.href = "Lesson_1.html";
+    link.textContent = "▶ Play Now";
+    card.appendChild(link);
+  } else {
+    const badge = document.createElement("span");
+    badge.className = "soon";
+    badge.textContent = "🔒 Coming Soon";
+    card.appendChild(badge);
+  }
+
+  container.appendChild(card);
+});
+</script>
+
+</body>
+</html>
