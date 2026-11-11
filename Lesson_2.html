@@ -1,0 +1,560 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 2 | Python Explorers</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:radial-gradient(circle at top left,#401b65,#0c1020 65%);
+ color:#f8f8ff;
+ font-family:Arial,sans-serif;
+ line-height:1.5;
+}
+header,footer{text-align:center;padding:30px 15px}
+h1{color:#6ce8f0;font-size:clamp(30px,6vw,52px)}
+h2{color:#f77bdd}
+a{color:#6ce8f0}
+main{max-width:850px;margin:auto;padding:15px}
+section{
+ background:#19223b;
+ border:1px solid #3a4667;
+ border-radius:20px;
+ padding:24px;
+ margin-bottom:24px;
+}
+.tag{color:#6ce8f0;font-weight:bold}
+pre{
+ background:#080d1b;
+ color:#bfffe9;
+ padding:18px;
+ border-radius:12px;
+ white-space:pre-wrap;
+ overflow-wrap:anywhere;
+}
+button{
+ background:#293c60;
+ color:white;
+ border:1px solid #61779c;
+ padding:13px 18px;
+ margin:6px 4px;
+ border-radius:11px;
+ font-size:15px;
+ cursor:pointer;
+}
+button:hover:not(:disabled){background:#365782}
+button:disabled{opacity:.5;cursor:default}
+.primary{
+ background:#6ce8f0;
+ color:#101827;
+ font-weight:bold;
+ border:0;
+}
+.choice{display:block;width:100%;text-align:left}
+.correct{background:#14674e!important}
+.wrong{background:#80344c!important}
+.feedback{
+ min-height:50px;
+ background:#263552;
+ padding:13px;
+ border-radius:10px;
+ margin-top:15px;
+}
+.score{font-size:34px;color:#6beac3;font-weight:bold}
+.progress{
+ height:12px;
+ background:#354360;
+ border-radius:20px;
+ overflow:hidden;
+}
+#bar{
+ width:0%;
+ height:100%;
+ background:linear-gradient(90deg,#f77bdd,#6ce8f0);
+}
+.tiles{display:flex;flex-wrap:wrap;gap:8px}
+.tile{font-family:monospace}
+#selected{
+ min-height:70px;
+ border:2px dashed #7183a5;
+ border-radius:12px;
+ padding:12px;
+ margin:12px 0;
+}
+</style>
+</head>
+<body>
+
+<header>
+<p class="tag">🐍 PYTHON EXPLORERS — BOOK 1</p>
+<h1>Variables, Types and User Input</h1>
+<p>LESSON 02 · INTERACTIVE CHALLENGES</p>
+<p>Three games. Twelve challenges. Let's go!</p>
+<a href="index.html">← All Lessons</a>
+</header>
+
+<main>
+
+<section>
+<h2>🏆 Your Scoreboard</h2>
+<div class="score" id="score">0 / 12</div>
+<div class="progress"><div id="bar"></div></div>
+<p id="status">Complete challenges to earn points!</p>
+<button onclick="resetAll()">Reset All Progress ↺</button>
+</section>
+
+<section>
+<p class="tag">GAME 1 — FIVE QUESTIONS</p>
+<h2>🔎 Variable Detective</h2>
+<p>Predict the output or identify the correct data type.</p>
+<h3 id="qNumber"></h3>
+<pre id="qCode"></pre>
+<div id="answers"></div>
+<div class="feedback" id="qFeedback">
+Choose the correct answer!
+</div>
+<button class="primary" id="nextQuiz"
+onclick="nextQuestion()" disabled>
+Next Question →
+</button>
+</section>
+
+<section>
+<p class="tag">GAME 2 — FOUR BUGS</p>
+<h2>🐛 Bug Fixer</h2>
+<p>Find the error and choose the correct Python code!</p>
+<h3 id="bNumber"></h3>
+<pre id="bCode"></pre>
+<div id="bugAnswers"></div>
+<div class="feedback" id="bFeedback">
+Find the mistake!
+</div>
+<button class="primary" id="nextBug"
+onclick="nextBug()" disabled>
+Next Bug →
+</button>
+</section>
+
+<section>
+<p class="tag">GAME 3 — THREE MISSIONS</p>
+<h2>🧩 Code Builder</h2>
+<p>Tap the code pieces in the correct order!</p>
+<h3 id="missionNumber"></h3>
+<p id="missionGoal"></p>
+<p id="missionHint"></p>
+
+<h3>Your Code</h3>
+<div class="tiles" id="selected"></div>
+
+<h3>Available Pieces</h3>
+<div class="tiles" id="pieces"></div>
+
+<div class="feedback" id="buildFeedback">
+Build your Python program!
+</div>
+
+<button class="primary" onclick="checkBuild()">
+Check My Code ✓
+</button>
+<button onclick="clearBuild()">Clear</button>
+<button id="nextMission" onclick="nextMission()" disabled>
+Next Mission →
+</button>
+</section>
+
+<section>
+<h2>🎉 Mission Complete?</h2>
+<p id="finalMessage">
+Complete all 12 challenges to master Lesson 2!
+</p>
+</section>
+
+</main>
+
+<footer>
+<p>Created by Rambod Jafari Nasab 🚀</p>
+<p>Python Explorers — Book 1</p>
+</footer>
+
+<script>
+"use strict";
+
+const questions=[
+{
+ code:'name = "Rambod"\nage = 15\nprint(name, age)',
+ options:[
+ "name age",
+ "Rambod 15",
+ "Rambod age",
+ "Error"
+ ],
+ correct:1,
+ explanation:"Python prints the values stored in the variables."
+},
+{
+ code:'number = "10"\nprint(number * 3)',
+ options:[
+ "30",
+ "101010",
+ "13",
+ "Error"
+ ],
+ correct:1,
+ explanation:"A string repeated three times produces 101010."
+},
+{
+ code:'price = 12.50\nprint(type(price).__name__)',
+ options:["int","str","float","bool"],
+ correct:2,
+ explanation:"Decimal numbers are normally stored as floats."
+},
+{
+ code:'number = "10"\nprint(int(number) + 5)',
+ options:["105","50","15","Error"],
+ correct:2,
+ explanation:"int() converts suitable numeric text into an integer."
+},
+{
+ code:'age = 12\nage = age + 1\nprint(age)',
+ options:["12","13","121","Error"],
+ correct:1,
+ explanation:"The second assignment increases age by one."
+}
+];
+
+const bugs=[
+{
+ code:'1name = "Alex"',
+ options:[
+ 'name1 = "Alex"',
+ '1name = "Alex"',
+ 'name-1 = "Alex"',
+ 'if = "Alex"'
+ ],
+ correct:0,
+ explanation:"Variable names cannot begin with a number."
+},
+{
+ code:'age = input("Age: ")\nprint(age + 1)',
+ options:[
+ 'print(int(age) + 1)',
+ 'print(age + "1")',
+ 'print(age + 1)',
+ 'print(str(age) + 1)'
+ ],
+ correct:0,
+ explanation:"input() returns a string. Convert it to int first."
+},
+{
+ code:'name = "Rambod"\nprint(Name)',
+ options:[
+ 'print(name)',
+ 'print(NAME)',
+ 'print(Name)',
+ 'print("name")'
+ ],
+ correct:0,
+ explanation:"Python is case-sensitive: Name and name differ."
+},
+{
+ code:'price = "12.50"\nprint(price + 2)',
+ options:[
+ 'print(float(price) + 2)',
+ 'print(price + 2)',
+ 'print(int(price) + 2)',
+ 'print(price * 2)'
+ ],
+ correct:0,
+ explanation:"float() converts decimal text for arithmetic."
+}
+];
+
+const missions=[
+{
+ goal:"Create a variable named age with value 12.",
+ hint:"Use the assignment operator =.",
+ pieces:["12","age","="],
+ answer:["age","=","12"]
+},
+{
+ goal:"Ask the user for their name and store it.",
+ hint:"Use input() with a text prompt.",
+ pieces:[
+ 'input("Your name? ")',
+ "=",
+ "name"
+ ],
+ answer:[
+ "name",
+ "=",
+ 'input("Your name? ")'
+ ]
+},
+{
+ goal:"Print the next age after converting text to a number.",
+ hint:"Convert age using int(), then add 1.",
+ pieces:[
+ "1",
+ "int(age)",
+ "+",
+ ")",
+ "print",
+ "("
+ ],
+ answer:[
+ "print",
+ "(",
+ "int(age)",
+ "+",
+ "1",
+ ")"
+ ]
+}
+];
+
+let qi=0,bi=0,mi=0;
+let quizAnswered=false;
+let bugAnswered=false;
+let missionSolved=false;
+
+const solvedQ=new Set();
+const solvedB=new Set();
+const solvedM=new Set();
+let chosen=[];
+
+const get=id=>document.getElementById(id);
+
+function updateScore(){
+ const total=solvedQ.size+solvedB.size+solvedM.size;
+ get("score").textContent=total+" / 12";
+ get("bar").style.width=(total/12*100)+"%";
+
+ get("status").textContent=
+ total===12?"PERFECT SCORE! 🏆":
+ total>=8?"Amazing work! 🌟":
+ total>=4?"Keep going, Explorer! 🚀":
+ "Complete challenges to earn points!";
+
+ get("finalMessage").textContent=
+ total===12
+ ? "🏆 Congratulations! You completed Lesson 2!"
+ : total+" of 12 challenges completed correctly.";
+}
+
+function showChoices(container,options,correct,onAnswer){
+ const area=get(container);
+ area.replaceChildren();
+
+ options.forEach((answer,i)=>{
+  const button=document.createElement("button");
+  button.className="choice";
+  button.textContent=answer;
+  button.onclick=()=>{
+   if(!onAnswer(i))return;
+
+   [...area.children].forEach((b,j)=>{
+    b.disabled=true;
+    if(j===correct)b.classList.add("correct");
+    if(j===i&&i!==correct)b.classList.add("wrong");
+   });
+  };
+  area.appendChild(button);
+ });
+}
+
+function showQuestion(){
+ quizAnswered=false;
+ const q=questions[qi];
+
+ get("qNumber").textContent=
+ "Question "+(qi+1)+" of "+questions.length;
+ get("qCode").textContent=q.code;
+ get("qFeedback").textContent="Choose the correct answer!";
+ get("nextQuiz").disabled=true;
+
+ showChoices("answers",q.options,q.correct,i=>{
+  if(quizAnswered)return false;
+  quizAnswered=true;
+
+  const right=i===q.correct;
+  if(right)solvedQ.add(qi);
+
+  get("qFeedback").textContent=
+  (right?"✅ Correct! ":"💡 Not quite. ")+q.explanation;
+
+  get("nextQuiz").disabled=false;
+  updateScore();
+  return true;
+ });
+}
+
+function nextQuestion(){
+ qi++;
+ if(qi>=questions.length){
+  qi=0;
+  solvedQ.clear();
+ }
+ showQuestion();
+ updateScore();
+}
+
+function showBug(){
+ bugAnswered=false;
+ const b=bugs[bi];
+
+ get("bNumber").textContent=
+ "Bug "+(bi+1)+" of "+bugs.length;
+ get("bCode").textContent=b.code;
+ get("bFeedback").textContent="Find the correct fix!";
+ get("nextBug").disabled=true;
+
+ showChoices("bugAnswers",b.options,b.correct,i=>{
+  if(bugAnswered)return false;
+  bugAnswered=true;
+
+  const right=i===b.correct;
+  if(right)solvedB.add(bi);
+
+  get("bFeedback").textContent=
+  (right?"✅ Bug fixed! ":"💡 Learn from this: ")+
+  b.explanation;
+
+  get("nextBug").disabled=false;
+  updateScore();
+  return true;
+ });
+}
+
+function nextBug(){
+ bi++;
+ if(bi>=bugs.length){
+  bi=0;
+  solvedB.clear();
+ }
+ showBug();
+ updateScore();
+}
+
+function renderTiles(){
+ const mission=missions[mi];
+ const selectedArea=get("selected");
+ const bank=get("pieces");
+
+ selectedArea.replaceChildren();
+ bank.replaceChildren();
+
+ chosen.forEach((originalIndex,pos)=>{
+  const button=document.createElement("button");
+  button.className="tile";
+  button.textContent=mission.pieces[originalIndex];
+  button.disabled=missionSolved;
+  button.onclick=()=>{
+   chosen.splice(pos,1);
+   renderTiles();
+  };
+  selectedArea.appendChild(button);
+ });
+
+ mission.pieces.forEach((piece,index)=>{
+  if(chosen.includes(index))return;
+
+  const button=document.createElement("button");
+  button.className="tile";
+  button.textContent=piece;
+  button.disabled=missionSolved;
+  button.onclick=()=>{
+   chosen.push(index);
+   renderTiles();
+  };
+  bank.appendChild(button);
+ });
+
+ if(chosen.length===0){
+  selectedArea.textContent="Tap code pieces below...";
+ }
+}
+
+function showMission(){
+ const mission=missions[mi];
+ chosen=[];
+ missionSolved=false;
+
+ get("missionNumber").textContent=
+ "Mission "+(mi+1)+" of "+missions.length;
+ get("missionGoal").textContent=mission.goal;
+ get("missionHint").textContent=mission.hint;
+ get("buildFeedback").textContent="Build your Python program!";
+ get("nextMission").disabled=true;
+
+ renderTiles();
+}
+
+function checkBuild(){
+ if(missionSolved)return;
+
+ const mission=missions[mi];
+ const answer=chosen.map(i=>mission.pieces[i]);
+
+ const right=
+ answer.length===mission.answer.length &&
+ answer.every((x,i)=>x===mission.answer[i]);
+
+ if(right){
+  missionSolved=true;
+  solvedM.add(mi);
+
+  get("buildFeedback").textContent=
+  "✅ Perfect! You built the correct Python code!";
+  get("nextMission").disabled=false;
+
+  renderTiles();
+  updateScore();
+ }else{
+  get("buildFeedback").textContent=
+  "❌ Not quite! Try rearranging the pieces.";
+ }
+}
+
+function clearBuild(){
+ if(missionSolved)return;
+ chosen=[];
+ renderTiles();
+ get("buildFeedback").textContent="Try again!";
+}
+
+function nextMission(){
+ mi++;
+ if(mi>=missions.length){
+  mi=0;
+  solvedM.clear();
+ }
+ showMission();
+ updateScore();
+}
+
+function resetAll(){
+ qi=0;
+ bi=0;
+ mi=0;
+
+ solvedQ.clear();
+ solvedB.clear();
+ solvedM.clear();
+
+ showQuestion();
+ showBug();
+ showMission();
+ updateScore();
+}
+
+showQuestion();
+showBug();
+showMission();
+updateScore();
+</script>
+
+</body>
+</html>
