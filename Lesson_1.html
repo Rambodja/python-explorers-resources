@@ -1,0 +1,567 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 1 | Python Explorers</title>
+<style>
+:root {
+  --bg:#0c1020;
+  --panel:#19223b;
+  --text:#f8f8ff;
+  --pink:#f77bdd;
+  --cyan:#6ce8f0;
+  --green:#6beac3;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:radial-gradient(circle at top left,#401b65,var(--bg) 65%);
+  color:var(--text);
+  font-family:Arial,sans-serif;
+  line-height:1.5;
+}
+header,footer { text-align:center; padding:30px 15px; }
+h1 {
+  color:var(--cyan);
+  font-size:clamp(32px,6vw,55px);
+  margin:10px 0;
+}
+h2 { color:var(--pink); }
+a { color:var(--cyan); }
+main { max-width:850px; margin:auto; padding:15px; }
+section {
+  background:var(--panel);
+  border:1px solid #3a4667;
+  padding:24px;
+  border-radius:20px;
+  margin-bottom:24px;
+}
+.tag { color:var(--cyan); font-weight:bold; }
+pre {
+  background:#080d1b;
+  color:#bfffe9;
+  padding:18px;
+  border-radius:12px;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  font-size:16px;
+}
+button {
+  background:#293c60;
+  color:white;
+  border:1px solid #61779c;
+  padding:13px 18px;
+  margin:6px 4px;
+  border-radius:11px;
+  font-size:15px;
+  cursor:pointer;
+}
+button:hover:not(:disabled) { background:#365782; }
+button:disabled { opacity:.55; cursor:default; }
+.primary {
+  background:var(--cyan);
+  color:#101827;
+  font-weight:bold;
+  border:0;
+}
+.choice {
+  display:block;
+  width:100%;
+  text-align:left;
+}
+.correct { background:#14674e!important; }
+.wrong { background:#80344c!important; }
+.feedback {
+  min-height:48px;
+  padding:12px;
+  border-radius:10px;
+  background:#263552;
+  margin-top:15px;
+}
+.score {
+  font-size:32px;
+  font-weight:bold;
+  color:var(--green);
+}
+.progress {
+  height:12px;
+  background:#354360;
+  border-radius:20px;
+  overflow:hidden;
+}
+#bar {
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--pink),var(--cyan));
+}
+.tiles { display:flex; gap:8px; flex-wrap:wrap; }
+.tile { font-family:monospace; }
+#selected {
+  min-height:65px;
+  padding:12px;
+  border:2px dashed #7183a5;
+  border-radius:12px;
+  margin:12px 0;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <p class="tag">🐍 PYTHON EXPLORERS — BOOK 1</p>
+  <h1>Your First Python Program</h1>
+  <p>LESSON 01 · INTERACTIVE CHALLENGES</p>
+  <p>Three games. Thirteen challenges. One mission!</p>
+  <a href="index.html">← All Lessons</a>
+</header>
+
+<main>
+
+<section>
+  <h2>🏆 Your Scoreboard</h2>
+  <div class="score" id="score">0 / 13</div>
+  <div class="progress"><div id="bar"></div></div>
+  <p id="status">Complete the games to earn points!</p>
+  <button onclick="resetAll()">Reset All Progress ↺</button>
+</section>
+
+<section>
+  <p class="tag">GAME 1 — SIX QUESTIONS</p>
+  <h2>🔎 Output Detective</h2>
+  <p>Read the Python code and predict its output!</p>
+  <h3 id="qNumber"></h3>
+  <pre id="qCode"></pre>
+  <div id="answers"></div>
+  <div class="feedback" id="qFeedback">
+    Choose the correct answer!
+  </div>
+  <button class="primary" id="nextQuiz"
+    onclick="nextQuestion()" disabled>
+    Next Question →
+  </button>
+</section>
+
+<section>
+  <p class="tag">GAME 2 — FOUR PUZZLES</p>
+  <h2>🐛 Bug Fixer</h2>
+  <p>Something is wrong with the code. Find the correct fix!</p>
+  <h3 id="bNumber"></h3>
+  <pre id="bCode"></pre>
+  <div id="bugAnswers"></div>
+  <div class="feedback" id="bFeedback">
+    Find the mistake!
+  </div>
+  <button class="primary" id="nextBug"
+    onclick="nextBug()" disabled>
+    Next Bug →
+  </button>
+</section>
+
+<section>
+  <p class="tag">GAME 3 — THREE MISSIONS</p>
+  <h2>🧩 Code Builder</h2>
+  <p>Tap the pieces in the correct order to build Python code.</p>
+  <h3 id="missionNumber"></h3>
+  <p id="missionGoal"></p>
+  <p id="missionHint"></p>
+
+  <h3>Your Code</h3>
+  <div class="tiles" id="selected"></div>
+
+  <h3>Available Pieces</h3>
+  <div class="tiles" id="pieces"></div>
+
+  <div class="feedback" id="buildFeedback">
+    Build your Python program!
+  </div>
+
+  <button class="primary" onclick="checkBuild()">
+    Check My Code ✓
+  </button>
+  <button onclick="clearBuild()">Clear</button>
+  <button id="nextMission" onclick="nextMission()" disabled>
+    Next Mission →
+  </button>
+</section>
+
+<section>
+  <h2>🎉 Mission Complete?</h2>
+  <p id="finalMessage">
+    Finish the three games to become a Lesson 1 master!
+  </p>
+  <p>No downloads, accounts, or Python installation required.</p>
+</section>
+
+</main>
+
+<footer>
+  <p>Created by Rambod Jafari Nasab 🚀</p>
+  <p>Python Explorers — Book 1</p>
+</footer>
+
+<script>
+"use strict";
+
+const questions = [
+  {
+    code:'print("Hello, Explorer!")',
+    options:[
+      '"Hello, Explorer!"',
+      'Hello, Explorer!',
+      'print("Hello, Explorer!")',
+      'Hello Explorer'
+    ],
+    correct:1,
+    explanation:"Python displays text without its quotation marks."
+  },
+  {
+    code:'print("Rome", "Milan", "Naples", sep=" | ")',
+    options:[
+      "RomeMilanNaples",
+      "Rome, Milan, Naples",
+      "Rome | Milan | Naples",
+      "Rome / Milan / Naples"
+    ],
+    correct:2,
+    explanation:"sep controls what appears between values."
+  },
+  {
+    code:'print("Ready", end="... ")\nprint("Go!")',
+    options:[
+      "Ready... Go!",
+      "Ready\nGo!",
+      "ReadyGo!",
+      "Ready ..."
+    ],
+    correct:0,
+    explanation:"end changes what follows the first print."
+  },
+  {
+    code:"print(7 % 3)",
+    options:["2","1","3","7"],
+    correct:1,
+    explanation:"The remainder when 7 is divided by 3 is 1."
+  },
+  {
+    code:"print(2 + 5 * (3 + 1))",
+    options:["28","22","32","15"],
+    correct:1,
+    explanation:"Parentheses first, then multiplication, then addition."
+  },
+  {
+    code:'print("First line\\nSecond line")',
+    options:[
+      "First line\\nSecond line",
+      "First line Second line",
+      "First line\nSecond line",
+      "Second line\nFirst line"
+    ],
+    correct:2,
+    explanation:"\\n creates a new line."
+  }
+];
+
+const bugs = [
+  {
+    code:'print("Hello!)',
+    options:[
+      'print("Hello!")',
+      'print(Hello!)',
+      'Print("Hello!")',
+      'print("Hello!"'
+    ],
+    correct:0,
+    explanation:"Text needs matching quotes and a closing parenthesis."
+  },
+  {
+    code:'print("My age is" 15)',
+    options:[
+      'print("My age is" + 15)',
+      'print("My age is", 15)',
+      'print("My age is": 15)',
+      'print "My age is", 15'
+    ],
+    correct:1,
+    explanation:"Separate the two print values with a comma."
+  },
+  {
+    code:'print("Rome", "Venice", sep:" → ")',
+    options:[
+      'print("Rome", "Venice", sep+" → ")',
+      'print("Rome", "Venice", sep=" → ")',
+      'print("Rome", "Venice", sep:" → ")',
+      'print("Rome", "Venice" = " → ")'
+    ],
+    correct:1,
+    explanation:"Python keyword arguments use = instead of :."
+  },
+  {
+    code:'print("Loading", end:"...")',
+    options:[
+      'print("Loading", end="...")',
+      'print("Loading", end=="...")',
+      'print("Loading", end:"...")',
+      'print("Loading"; end="...")'
+    ],
+    correct:0,
+    explanation:"Use end= to change the end of a print statement."
+  }
+];
+
+const missions = [
+  {
+    goal:"Print Hello, Explorer!",
+    hint:"Remember quotes and parentheses.",
+    pieces:['(', '"Hello, Explorer!"', 'print', ')'],
+    answer:['print','(','"Hello, Explorer!"',')']
+  },
+  {
+    goal:"Print 1-2-3 on one line.",
+    hint:'Use sep="-" between the numbers.',
+    pieces:[')', 'sep="-"', 'print', '(', '1, 2, 3,'],
+    answer:['print','(','1, 2, 3,','sep="-"',')']
+  },
+  {
+    goal:"Print Ready... without a new line.",
+    hint:"Use the end argument.",
+    pieces:['end="..."', ')', 'print', '"Ready",', '('],
+    answer:['print','(','"Ready",','end="..."',')']
+  }
+];
+
+let qi=0, bi=0, mi=0;
+let quizAnswered=false;
+let bugAnswered=false;
+let missionSolved=false;
+
+const solvedQ=new Set();
+const solvedB=new Set();
+const solvedM=new Set();
+
+let chosen=[];
+
+const get=id=>document.getElementById(id);
+
+function updateScore(){
+  const total=solvedQ.size+solvedB.size+solvedM.size;
+  get("score").textContent=total+" / 13";
+  get("bar").style.width=(total/13*100)+"%";
+
+  get("status").textContent=
+    total===13?"PERFECT SCORE! 🏆":
+    total>=9?"Amazing work! 🌟":
+    total>=4?"Keep going, Explorer! 🚀":
+    "Complete challenges to earn points!";
+
+  if(total===13){
+    get("finalMessage").textContent=
+      "🏆 Congratulations! You completed all 13 challenges!";
+  }else{
+    get("finalMessage").textContent=
+      total+" of 13 challenges completed correctly.";
+  }
+}
+
+function showChoices(container,options,correct,onAnswer){
+  const area=get(container);
+  area.replaceChildren();
+
+  options.forEach((answer,i)=>{
+    const button=document.createElement("button");
+    button.className="choice";
+    button.textContent=answer;
+    button.onclick=()=>{
+      const accepted=onAnswer(i);
+      if(!accepted)return;
+
+      [...area.children].forEach((b,j)=>{
+        b.disabled=true;
+        if(j===correct)b.classList.add("correct");
+        if(j===i&&i!==correct)b.classList.add("wrong");
+      });
+    };
+    area.appendChild(button);
+  });
+}
+
+function showQuestion(){
+  quizAnswered=false;
+  const q=questions[qi];
+  get("qNumber").textContent=
+    "Question "+(qi+1)+" of "+questions.length;
+  get("qCode").textContent=q.code;
+  get("qFeedback").textContent="Choose the correct output!";
+  get("nextQuiz").disabled=true;
+
+  showChoices("answers",q.options,q.correct,i=>{
+    if(quizAnswered)return false;
+    quizAnswered=true;
+    const right=i===q.correct;
+    if(right)solvedQ.add(qi);
+
+    get("qFeedback").textContent=
+      (right?"✅ Correct! ":"💡 Not quite. ")+q.explanation;
+    get("nextQuiz").disabled=false;
+    updateScore();
+    return true;
+  });
+}
+
+function nextQuestion(){
+  qi++;
+  if(qi>=questions.length){
+    qi=0;
+    solvedQ.clear();
+  }
+  showQuestion();
+  updateScore();
+}
+
+function showBug(){
+  bugAnswered=false;
+  const b=bugs[bi];
+  get("bNumber").textContent=
+    "Bug "+(bi+1)+" of "+bugs.length;
+  get("bCode").textContent=b.code;
+  get("bFeedback").textContent="Find the correct fix!";
+  get("nextBug").disabled=true;
+
+  showChoices("bugAnswers",b.options,b.correct,i=>{
+    if(bugAnswered)return false;
+    bugAnswered=true;
+    const right=i===b.correct;
+    if(right)solvedB.add(bi);
+
+    get("bFeedback").textContent=
+      (right?"✅ Bug fixed! ":"💡 Try learning from this: ")+
+      b.explanation;
+    get("nextBug").disabled=false;
+    updateScore();
+    return true;
+  });
+}
+
+function nextBug(){
+  bi++;
+  if(bi>=bugs.length){
+    bi=0;
+    solvedB.clear();
+  }
+  showBug();
+  updateScore();
+}
+
+function renderTiles(){
+  const mission=missions[mi];
+  const selectedArea=get("selected");
+  const bank=get("pieces");
+
+  selectedArea.replaceChildren();
+  bank.replaceChildren();
+
+  chosen.forEach((originalIndex,pos)=>{
+    const button=document.createElement("button");
+    button.className="tile";
+    button.textContent=mission.pieces[originalIndex];
+    button.disabled=missionSolved;
+    button.onclick=()=>{
+      chosen.splice(pos,1);
+      renderTiles();
+    };
+    selectedArea.appendChild(button);
+  });
+
+  mission.pieces.forEach((piece,index)=>{
+    if(chosen.includes(index))return;
+
+    const button=document.createElement("button");
+    button.className="tile";
+    button.textContent=piece;
+    button.disabled=missionSolved;
+    button.onclick=()=>{
+      chosen.push(index);
+      renderTiles();
+    };
+    bank.appendChild(button);
+  });
+
+  if(chosen.length===0){
+    selectedArea.textContent="Tap code pieces below...";
+  }
+}
+
+function showMission(){
+  const mission=missions[mi];
+  chosen=[];
+  missionSolved=false;
+  get("missionNumber").textContent=
+    "Mission "+(mi+1)+" of "+missions.length;
+  get("missionGoal").textContent=mission.goal;
+  get("missionHint").textContent=mission.hint;
+  get("buildFeedback").textContent="Build your Python program!";
+  get("nextMission").disabled=true;
+  renderTiles();
+}
+
+function checkBuild(){
+  if(missionSolved)return;
+
+  const mission=missions[mi];
+  const answer=chosen.map(i=>mission.pieces[i]);
+  const right=
+    answer.length===mission.answer.length &&
+    answer.every((x,i)=>x===mission.answer[i]);
+
+  if(right){
+    missionSolved=true;
+    solvedM.add(mi);
+    get("buildFeedback").textContent=
+      "✅ Perfect! You built the correct Python code!";
+    get("nextMission").disabled=false;
+    renderTiles();
+    updateScore();
+  }else{
+    get("buildFeedback").textContent=
+      "❌ Not quite! Try rearranging the code pieces.";
+  }
+}
+
+function clearBuild(){
+  if(missionSolved)return;
+  chosen=[];
+  renderTiles();
+  get("buildFeedback").textContent="Try again!";
+}
+
+function nextMission(){
+  mi++;
+  if(mi>=missions.length){
+    mi=0;
+    solvedM.clear();
+  }
+  showMission();
+  updateScore();
+}
+
+function resetAll(){
+  qi=0;
+  bi=0;
+  mi=0;
+  solvedQ.clear();
+  solvedB.clear();
+  solvedM.clear();
+  showQuestion();
+  showBug();
+  showMission();
+  updateScore();
+}
+
+showQuestion();
+showBug();
+showMission();
+updateScore();
+</script>
+</body>
+</html>
