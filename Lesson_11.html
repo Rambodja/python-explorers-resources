@@ -1,30 +1,224 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Lesson 11 | Python Explorers</title><style>
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font:16px/1.55 system-ui,Segoe UI,Arial,sans-serif;color:#f0f7ff;background:radial-gradient(ellipse at 10% 0,#38205a,#0b1126 52%)}a{color:#8ceefa}header{padding:44px 18px 28px;text-align:center}.eyebrow{letter-spacing:.12em;text-transform:uppercase;color:#8ceefa;font-size:.77rem;font-weight:800}.hero{font-size:clamp(2rem,5.2vw,3.5rem);max-width:930px;margin:6px auto 10px;line-height:1.1}.lede{color:#ccd5eb}.shell{max-width:980px;margin:0 auto;padding:18px 18px 58px}.panel{background:#18223c;border:1px solid #415177;border-radius:18px;padding:clamp(18px,4vw,30px);margin:18px auto;box-shadow:0 10px 28px #060a1a66}h2{margin:0 0 8px;color:#ff9fe6;font-size:1.5rem}h3{margin:15px 0 8px}.muted{color:#bec9e1}.gamehead{font-size:.75rem;color:#8ceefa;font-weight:800;letter-spacing:.09em}pre{white-space:pre-wrap;word-break:break-word;border:1px solid #3b507c;border-radius:12px;padding:18px;background:#0c152a;color:#bfffe5;font:15px/1.55 Consolas,monospace}button,.action{font:inherit;font-weight:700;border-radius:10px;background:#32436b;color:#fff;border:1px solid #62789e;padding:11px 15px;margin:4px;cursor:pointer}.action{display:inline-block;text-decoration:none;background:#78e6f1;color:#102034;border-color:#78e6f1}.primary{background:#78e6f1;color:#102034;border-color:#78e6f1}button:disabled{opacity:.48;cursor:default}.options{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:7px}.options button{text-align:left;white-space:pre-wrap;font:14px/1.45 Consolas,monospace;overflow-wrap:anywhere}.options button.ok{border-color:#55e6b2;background:#145b4c}.options button.bad{border-color:#ff7c91;background:#703248}.feedback{min-height:48px;padding:12px;border-radius:10px;background:#253653;margin:12px 0}.meter{height:13px;border-radius:40px;background:#31405e;overflow:hidden}.meter div{height:100%;width:0;background:linear-gradient(90deg,#fc82da,#70eefa);transition:width .2s}.score{font-size:2rem;color:#79e6bf;font-weight:850}.chips{display:flex;gap:7px;flex-wrap:wrap;min-height:48px;align-items:center;border:1px dashed #7187a8;border-radius:12px;padding:10px;margin:8px 0}.chips button{font:14px Consolas,monospace}.tiny{font-size:.88rem}.footer{text-align:center;padding:26px;border-top:1px solid #3f506c;color:#bdc8df}.special{border-color:#17baa966}.field{padding:11px;border-radius:8px;border:1px solid #6c82a0;background:#0c152a;color:white;font:inherit;max-width:100%;width:180px}.result{font-weight:750;color:#9bf4d5;padding:10px 0}.nav{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.nav a{text-decoration:none;color:#95ecfa;border:1px solid #526486;border-radius:100px;padding:7px 12px}.cardgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:15px}.lesson{display:flex;flex-direction:column;gap:12px;background:#18223c;padding:21px;border:1px solid #405176;border-radius:16px}.lesson h3{margin:0}.lesson p{color:#bfcbe1;margin:0;flex:1}.lesson a{padding:11px;text-align:center;background:#83e4ef;color:#0b1b2c;border-radius:9px;text-decoration:none;font-weight:800}.small-label{font-size:.8rem;font-weight:800;color:#9aebfa}.warn{background:#2b334e;border:1px solid #715b99;padding:12px;border-radius:10px}input[type=checkbox]{accent-color:#8aeedd;width:20px;height:20px}label.check{display:flex;gap:12px;align-items:center;margin:12px 0}canvas{width:100%;background:#101b34;border-radius:12px;border:1px solid #415177} @media(max-width:580px){header{padding:32px 12px}.options{grid-template-columns:1fr}.panel{padding:18px}.shell{padding:12px}}</style></head><body><header><div class="eyebrow">🐍 Python Explorers — Book 1</div><h1 class="hero">Lesson 11: Time, Maths and Number Bases</h1><p class="lede">Interactive quizzes · Fix-the-code puzzles · Code-building missions</p><nav class="nav"><a href="index.html">⌂ All Lessons</a><a href="Lesson_10.html">← Previous</a><a href="Lesson_12.html">Next →</a></nav></header><main class="shell"><section class="panel"><h2>🏆 Challenge Progress</h2><div id="score" class="score">0 / 8</div><div class="meter"><div id="bar"></div></div><p id="status" class="muted">Solve the challenges to collect points!</p><button onclick="resetAll()">Reset and replay ↻</button></section><section class="panel"><div class="gamehead">GAME 1 · OUTPUT DETECTIVE</div><h2>🔎 Predict the answer</h2><h3 id="qCount"></h3><pre id="qCode"></pre><div id="qOptions" class="options"></div><div id="qFeed" class="feedback" aria-live="polite"></div><button id="qNext" class="primary" onclick="nextQ()" disabled>Next question →</button></section><section class="panel"><div class="gamehead">GAME 2 · BUG FIXER</div><h2>🐛 Choose the correct fix</h2><h3 id="bCount"></h3><pre id="bCode"></pre><div id="bOptions" class="options"></div><div id="bFeed" class="feedback" aria-live="polite"></div><button id="bNext" class="primary" onclick="nextB()" disabled>Next bug →</button></section><section class="panel"><div class="gamehead">GAME 3 · CODE BUILDER</div><h2>🧩 Put the code together</h2><h3 id="mCount"></h3><p id="mGoal"></p><h3>Your code (tap to remove)</h3><div id="mChosen" class="chips"></div><h3>Available code pieces</h3><div id="mPieces" class="chips"></div><div id="mFeed" class="feedback" aria-live="polite"></div><button class="primary" onclick="checkM()">Check my code</button><button onclick="clearM()">Clear</button><button id="mNext" onclick="nextM()" disabled>Next mission →</button></section><section class="panel special"><div class="gamehead">BONUS MINI-GAME</div><h2>🔢 Number Base Converter</h2><p class="muted">Explore how a nonnegative whole number looks in binary, octal and hexadecimal.</p><label>Decimal number: <input id="specialValue" class="field" type="number" step="any" value="5"></label><p><button class="primary" onclick="specialPlay()">Try it ▶</button></p><div id="specialResult" class="result" aria-live="polite"></div></section><section class="panel"><h2>🚀 What next?</h2><p>Practise the examples from your book in Python or IDLE. These activities help you predict, debug and understand code; they do not execute Python.</p><a class="action" href="Lesson_12.html">Next Lesson →</a></section></main><div class="footer">Created by Rambod Jafari Nasab · Python Explorers Book 1</div><script id="lesson-data" type="application/json">{"questions": [{"code": "print(bin(10))", "options": ["0b1010", "0b1001", "0x10", "10"], "correct": 0, "why": "10 in binary is 1010."}, {"code": "print(hex(15))", "options": ["0xf", "0x15", "0b1111", "15"], "correct": 0, "why": "Hexadecimal uses f for decimal 15."}, {"code": "import math\nprint(math.floor(3.8))", "options": ["4", "3", "3.8", "Error"], "correct": 1, "why": "floor rounds down."}, {"code": "How many seconds are in 2 minutes?", "options": ["60", "120", "200", "20"], "correct": 1, "why": "2 × 60 = 120 seconds."}], "bugs": [{"code": "import math\nprint(math.sqrt(-1))", "options": ["import math\nprint(math.sqrt(\"16\"))", "import math\nprint(math.sqrt(16))", "import math\nprint(math.sqrt(16,2))"], "correct": 1, "why": "math.sqrt accepts nonnegative real inputs."}, {"code": "print(int(\"101\", 1))", "options": ["print(int(\"101\", 0))", "print(int(\"101\", 2))", "print(int(\"101\", 10))"], "correct": 1, "why": "Binary strings use base 2."}], "missions": [{"goal": "Convert 10 to binary.", "pieces": ["print(bin(10))", "print(hex(10))"], "answer": ["print(bin(10))"], "why": "bin produces base-2 representation."}, {"goal": "Pause for 2 seconds.", "pieces": ["import time", "time.sleep(2)"], "answer": ["import time", "time.sleep(2)"], "why": "Import time before using sleep."}], "special": "bases"}</script><script>
-const data=JSON.parse(document.getElementById('lesson-data').textContent);
-const get=id=>document.getElementById(id);
-let qi=0,bi=0,mi=0,qAnswered=false,bAnswered=false,mSolved=false, chosen=[];
-const earnedQ=new Set(),earnedB=new Set(),earnedM=new Set();
-function score(){let n=earnedQ.size+earnedB.size+earnedM.size, total=data.questions.length+data.bugs.length+data.missions.length;
-get('score').textContent=n+' / '+total;get('bar').style.width=(100*n/total)+'%';get('status').textContent=n===total?'🏆 PERFECT! You completed every challenge.':n>total/2?'Fantastic progress — keep exploring!':'Solve the challenges to collect points!';}
-function choices(id,choices,correct,callback){let el=get(id);el.replaceChildren();choices.forEach((val,i)=>{let bt=document.createElement('button');bt.textContent=val;bt.addEventListener('click',()=>{if(!callback(i))return;for(let [j,btn] of [...el.children].entries()){btn.disabled=true;if(j===correct)btn.classList.add('ok');else if(j===i)btn.classList.add('bad')}});el.append(bt)});}
-function showQ(){let d=data.questions[qi];qAnswered=false;get('qCount').textContent='Question '+(qi+1)+' of '+data.questions.length;get('qCode').textContent=d.code;get('qFeed').textContent='Pick your answer';get('qNext').disabled=true;choices('qOptions',d.options,d.correct,i=>{if(qAnswered)return false;qAnswered=true;if(i===d.correct)earnedQ.add(qi);get('qFeed').textContent=(i===d.correct?'✅ Correct! ':'💡 Not quite. ')+d.why;get('qNext').disabled=false;score();return true})}
-function nextQ(){qi++;if(qi>=data.questions.length){qi=0;earnedQ.clear()}showQ();score()}
-function showB(){let d=data.bugs[bi];bAnswered=false;get('bCount').textContent='Bug '+(bi+1)+' of '+data.bugs.length;get('bCode').textContent=d.code;get('bFeed').textContent='Choose the best fix';get('bNext').disabled=true;choices('bOptions',d.options,d.correct,i=>{if(bAnswered)return false;bAnswered=true;if(i===d.correct)earnedB.add(bi);get('bFeed').textContent=(i===d.correct?'✅ Fixed! ':'💡 Not quite. ')+d.why;get('bNext').disabled=false;score();return true})}
-function nextB(){bi++;if(bi>=data.bugs.length){bi=0;earnedB.clear()}showB();score()}
-function showM(){let d=data.missions[mi];chosen=[];mSolved=false;get('mCount').textContent='Mission '+(mi+1)+' of '+data.missions.length;get('mGoal').textContent=d.goal;get('mFeed').textContent='Tap pieces to put them in order';get('mNext').disabled=true;drawM()}
-function drawM(){let d=data.missions[mi],left=get('mChosen'),right=get('mPieces');left.replaceChildren();right.replaceChildren();if(!chosen.length)left.textContent='Your code will appear here';chosen.forEach((index,pos)=>{let bt=document.createElement('button');bt.textContent=d.pieces[index];bt.disabled=mSolved;bt.onclick=()=>{chosen.splice(pos,1);drawM()};left.append(bt)});d.pieces.forEach((val,i)=>{if(chosen.includes(i))return;let bt=document.createElement('button');bt.textContent=val;bt.disabled=mSolved;bt.onclick=()=>{chosen.push(i);drawM()};right.append(bt)})}
-function checkM(){if(mSolved)return;let d=data.missions[mi],answer=chosen.map(i=>d.pieces[i]);let right=answer.length===d.answer.length&&answer.every((x,i)=>x===d.answer[i]);get('mFeed').textContent=right?'✅ You did it! '+d.why:'Try reordering the pieces. Tap an added piece to remove it.';if(right){mSolved=true;earnedM.add(mi);get('mNext').disabled=false;drawM();score()}}
-function clearM(){if(mSolved)return;chosen=[];drawM()}
-function nextM(){mi++;if(mi>=data.missions.length){mi=0;earnedM.clear()}showM();score()}
-function resetAll(){qi=bi=mi=0;earnedQ.clear();earnedB.clear();earnedM.clear();showQ();showB();showM();score()}
-showQ();showB();showM();score();
-</script><script>window.specialType="bases";
-function specialPlay(){const type=window.specialType;const result=get('specialResult');let v=parseFloat(get('specialValue').value);if(!Number.isFinite(v)){result.textContent='Enter a valid number first!';return}if(type==='calculator'){let b=parseFloat(get('extraValue').value);if(!Number.isFinite(b)){result.textContent='Enter a second number!';return}let op=get('specialSelect').value;if(op==='/'&&b===0){result.textContent='Cannot divide by zero.';return}let ans=op==='+'?v+b:op==='-'?v-b:op==='*'?v*b:op==='/'?v/b:v**b;result.textContent='Result: '+ans;return}
-if(type==='guess'){let target=Number(sessionStorage.getItem('px-target'));if(!target){target=Math.floor(Math.random()*20)+1;sessionStorage.setItem('px-target',target)}result.textContent=v===target?'🎉 Correct! The number was '+target+'.':v<target?'Too low — try higher!':'Too high — try lower!';if(v===target){sessionStorage.removeItem('px-target')}return}
-if(type==='bases'){result.textContent=v>=0&&Number.isSafeInteger(v)?('Binary: '+v.toString(2)+' | Octal: '+v.toString(8)+' | Hex: '+v.toString(16).toUpperCase()):'Enter a nonnegative whole number.';return}
-if(type==='squares'){result.textContent='After '+Math.max(0,Math.min(25,Math.floor(v)))+' steps, a 100-unit square shrinks to '+(100*Math.pow(.91,Math.max(0,Math.min(25,Math.floor(v))))).toFixed(2)+' units. The rotation is '+((12*Math.max(0,Math.min(25,Math.floor(v))))%360)+'°.';return}
-if(type==='records'){result.textContent='With scores 14, 18, 16 and your score '+v+', the class average is '+((14+18+16+v)/4).toFixed(2);return}
-if(type==='dictionary'){let key=get('specialSelect').value;const record={name:'Ava',grade:18,club:'Coding'};result.textContent='record['+JSON.stringify(key)+'] → '+JSON.stringify(record[key]);return}
-if(type==='logo'){result.textContent='Your logo plan: '+Math.max(3,Math.min(12,Math.floor(v)))+'-sided shape, exterior angle '+(360/Math.max(3,Math.min(12,Math.floor(v)))).toFixed(1)+'°. Try creating it in Python Turtle!';return}}
-</script></body></html>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 11 — Time, Maths and Number Bases | Python Explorers</title>
+  <style>
+    :root { --bg:#0c1020; --card:#19243e; --border:#445778; --text:#f0f7ff; --muted:#c3cee6; --cyan:#75eaf2; --pink:#ff9de4; --mint:#91f3ce; }
+    * { box-sizing:border-box; }
+    body { margin:0; font:16px/1.5 system-ui,Arial,sans-serif; color:var(--text); background:radial-gradient(ellipse at 8% 0%,#422267,var(--bg) 60%); }
+    header { text-align:center; padding:42px 18px 26px; }
+    h1 { font-size:clamp(30px,5vw,52px); line-height:1.12; margin:8px auto; max-width:950px; color:var(--cyan); }
+    h2 { color:var(--pink); margin:6px 0 12px; }
+    h3 { margin-bottom:8px; }
+    a { color:var(--cyan); }
+    .eyebrow { color:var(--pink); font-weight:800; letter-spacing:1.6px; font-size:13px; }
+    .muted { color:var(--muted); }
+    main { max-width:940px; margin:auto; padding:12px 16px 50px; }
+    section { padding:clamp(18px,4vw,28px); border-radius:18px; background:var(--card); border:1px solid var(--border); margin:18px 0; }
+    pre { background:#0a152b; color:#bdfce8; border:1px solid #334b72; border-radius:12px; padding:17px; white-space:pre-wrap; overflow-wrap:anywhere; font:15px/1.5 Consolas,monospace; }
+    button { cursor:pointer; font:inherit; font-weight:700; background:#344872; color:white; padding:12px 16px; border-radius:10px; border:1px solid #6d80a5; margin:5px 4px 5px 0; }
+    button:hover:not(:disabled) { filter:brightness(1.2); }
+    button:focus-visible, input:focus-visible { outline:3px solid #ff9de4; outline-offset:3px; }
+    button:disabled { opacity:.55; cursor:not-allowed; }
+    button.primary { background:var(--cyan); border-color:var(--cyan); color:#091728; }
+    .choice { display:block; width:100%; text-align:left; white-space:pre-wrap; font:14px/1.5 Consolas,monospace; }
+    .choice.correct { background:#126449; border-color:#68efb5; }
+    .choice.wrong { background:#793449; border-color:#ff99aa; }
+    .choices { display:grid; grid-template-columns:repeat(auto-fit,minmax(225px,1fr)); gap:5px 10px; }
+    .choices .choice { margin:4px 0; }
+    .notice { padding:13px; border-radius:10px; background:#263856; min-height:50px; margin:12px 0; }
+    .score { font-size:32px; color:var(--mint); font-weight:800; }
+    .meter { height:12px; overflow:hidden; background:#354463; border-radius:100px; margin:14px 0; }
+    #meterFill { height:100%; width:0%; background:linear-gradient(90deg,#f78bdc,#83ecf3); transition:width .2s; }
+    .chips { min-height:58px; border:2px dashed #607aa2; padding:10px; border-radius:12px; display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+    .chips button { font:14px Consolas,monospace; padding:10px; }
+    .game-label { color:var(--cyan); font-size:12px; letter-spacing:1px; font-weight:800; }
+    input { font:inherit; padding:12px; border:1px solid #6d80a5; border-radius:10px; color:white; background:#101b32; max-width:100%; width:180px; }
+    .bonus { border-color:#2caeac; }
+    .flex { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+    footer { text-align:center; padding:24px; color:var(--muted); }
+    .nav { margin:15px 0 0; display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+    .nav a { display:inline-block; padding:8px 12px; border:1px solid #66789b; border-radius:100px; text-decoration:none; }
+    @media(max-width:600px) { .choices { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">🐍 PYTHON EXPLORERS • BOOK 1</div>
+  <h1>Lesson 11: Time, Maths and Number Bases</h1>
+  <p class="muted">Predict outputs, fix bugs, build code, and crack number bases!</p>
+  <nav class="nav"><a href="index.html">⌂ All Lessons</a><a href="Lesson_10.html">← Lesson 10</a><a href="Lesson_12.html">Lesson 12 →</a></nav>
+</header>
+<main>
+  <section>
+    <h2>🏆 Your Challenge Score</h2>
+    <div id="score" class="score" aria-live="polite">0 / 10</div>
+    <div class="meter"><div id="meterFill"></div></div>
+    <p id="progressText" class="muted">Complete all 10 challenges!</p>
+    <button id="resetButton">↻ Reset everything</button>
+  </section>
+  <section>
+    <div class="game-label">GAME 1 • 4 CHALLENGES</div>
+    <h2>🔎 Output Detective</h2>
+    <h3 id="quizLabel">Question 1</h3>
+    <pre id="quizCode"></pre>
+    <div id="quizChoices" class="choices"></div>
+    <div id="quizFeedback" class="notice" aria-live="polite"></div>
+    <button id="quizNext" class="primary" disabled>Next question →</button>
+  </section>
+  <section>
+    <div class="game-label">GAME 2 • 3 CHALLENGES</div>
+    <h2>🐛 Fix the Broken Code</h2>
+    <h3 id="bugLabel">Bug 1</h3>
+    <pre id="bugCode"></pre>
+    <div id="bugChoices" class="choices"></div>
+    <div id="bugFeedback" class="notice" aria-live="polite"></div>
+    <button id="bugNext" class="primary" disabled>Next bug →</button>
+  </section>
+  <section>
+    <div class="game-label">GAME 3 • 3 CHALLENGES</div>
+    <h2>🧩 Code Builder</h2>
+    <h3 id="buildLabel">Mission 1</h3>
+    <p id="buildGoal"></p>
+    <p class="muted">Tap code pieces to put them in the correct order. Tap your selected pieces to remove them.</p>
+    <h3>Your code</h3>
+    <div id="chosenPieces" class="chips"></div>
+    <h3>Available code pieces</h3>
+    <div id="availablePieces" class="chips"></div>
+    <div id="buildFeedback" class="notice" aria-live="polite"></div>
+    <button id="buildCheck" class="primary">Check my code ✓</button>
+    <button id="buildClear">Clear</button>
+    <button id="buildNext" disabled>Next mission →</button>
+  </section>
+  <section class="bonus">
+    <div class="game-label">BONUS TOOL • NO PYTHON INSTALL NEEDED</div>
+    <h2>🔢 Number Base Converter</h2>
+    <p>Enter a whole number and discover its binary, octal and hexadecimal versions.</p>
+    <div class="flex"><label for="numberInput">Decimal number:</label><input type="number" id="numberInput" min="0" step="1" value="10"><button id="convertButton" class="primary">Convert ▶</button></div>
+    <div id="conversionResult" class="notice" aria-live="polite"></div>
+  </section>
+  <section class="bonus">
+    <div class="game-label">BONUS MINI-GAME</div>
+    <h2>⏱️ Time Converter</h2>
+    <p>How many seconds are there in a number of minutes? Check your answer.</p>
+    <div class="flex"><label for="minutesInput">Minutes:</label><input type="number" id="minutesInput" min="0" step="1" value="3"><button id="timeButton" class="primary">Calculate ▶</button></div>
+    <div id="timeResult" class="notice" aria-live="polite"></div>
+  </section>
+  <section><h2>🚀 Keep Exploring</h2><p>These games help you understand code; they do not run Python. Try the real examples in your book using IDLE or another Python editor.</p><a href="Lesson_12.html">Continue to Lesson 12 →</a></section>
+</main>
+<footer>Created by Rambod Jafari Nasab • Python Explorers Book 1</footer>
+<script>
+'use strict';
+const quiz = [
+  {code:'print(bin(10))',options:['0b1010','0b1001','0x10','10'],correct:0,why:'10 in binary is 1010, and Python adds the 0b prefix.'},
+  {code:'print(oct(10))',options:['0x10','0o12','0b1010','12'],correct:1,why:'Decimal 10 is 12 in octal, written 0o12 by Python.'},
+  {code:'print(hex(15))',options:['0x15','15','0xf','0b1111'],correct:2,why:'Decimal 15 is the hexadecimal digit f.'},
+  {code:'import math\nprint(math.sqrt(81))',options:['9','9.0','81','Error'],correct:1,why:'math.sqrt returns a floating-point value, 9.0.'}
+];
+const bugs = [
+  {code:'import math\nprint(math.sqr(16))',options:['import math\nprint(math.sqrt(16))','import math\nprint(math.sqr(16))','import math\nprint(sqrt.math(16))'],correct:0,why:'The function is called sqrt(), not sqr().'},
+  {code:'import time\ntime.sleep("2")',options:['import time\ntime.sleep(2)','import time\ntime.sleep("2")','import time\ntime.wait(2)'],correct:0,why:'time.sleep expects a number of seconds, not a text string.'},
+  {code:'print(int("101", 1))',options:['print(int("101", 8))','print(int("101", 2))','print(int("101", 1))'],correct:1,why:'To interpret 101 as a binary number, pass base 2.'}
+];
+const missions = [
+  {goal:'Print the binary form of decimal 6.',pieces:['(', 'print', 'bin(6)', ')'],answer:['print','(','bin(6)',')'],why:'bin(6) produces the text 0b110.'},
+  {goal:'Pause a program for two seconds.',pieces:['time.sleep(2)','import time'],answer:['import time','time.sleep(2)'],why:'Import the time module before calling time.sleep.'},
+  {goal:'Print the square root of 25.',pieces:['math.sqrt(25)', 'import math', 'print(', ')'],answer:['import math','print(','math.sqrt(25)',')'],why:'math.sqrt(25) evaluates to 5.0.'}
+];
+const el = id => document.getElementById(id);
+const awarded = { quiz:new Set(),bug:new Set(),build:new Set() };
+const pos={quiz:0,bug:0,build:0};
+let quizLocked=false,bugLocked=false,buildSolved=false,selected=[];
+function updateScore(){
+  const total=awarded.quiz.size+awarded.bug.size+awarded.build.size;
+  el('score').textContent=total+' / 10';
+  el('meterFill').style.width=(total*10)+'%';
+  el('progressText').textContent=total===10?'🏆 You mastered all ten challenges!':total+' of 10 challenges solved correctly. Keep going!';
+}
+function showMultiple(type){
+  const isQuiz=type==='quiz';
+  const set=isQuiz?quiz:bugs, d=set[pos[type]], prefix=isQuiz?'quiz':'bug';
+  if(isQuiz)quizLocked=false;else bugLocked=false;
+  el(prefix+'Label').textContent=(isQuiz?'Question ':'Bug ')+(pos[type]+1)+' of '+set.length;
+  el(prefix+'Code').textContent=d.code;
+  el(prefix+'Feedback').textContent=isQuiz?'Predict the correct result.':'Choose the corrected code.';
+  el(prefix+'Next').disabled=true;
+  const area=el(prefix+'Choices');area.replaceChildren();
+  d.options.forEach((value,i)=>{
+    const btn=document.createElement('button');btn.className='choice';btn.textContent=value;
+    btn.addEventListener('click',()=>{
+      if(isQuiz?quizLocked:bugLocked)return;
+      if(isQuiz)quizLocked=true;else bugLocked=true;
+      if(i===d.correct)awarded[type].add(pos[type]);
+      Array.from(area.children).forEach((choice,j)=>{
+        choice.disabled=true;
+        if(j===d.correct)choice.classList.add('correct');
+        if(j===i&&i!==d.correct)choice.classList.add('wrong');
+      });
+      el(prefix+'Feedback').textContent=(i===d.correct?'✅ Correct! ':'💡 Not quite. ')+d.why;
+      el(prefix+'Next').disabled=false;
+      updateScore();
+    });
+    area.appendChild(btn);
+  });
+}
+function nextMultiple(type){
+  const set=type==='quiz'?quiz:bugs;
+  pos[type]=(pos[type]+1)%set.length;
+  showMultiple(type);
+}
+function renderPieces(){
+  const d=missions[pos.build], out=el('chosenPieces'), bank=el('availablePieces');
+  out.replaceChildren();bank.replaceChildren();
+  if(selected.length===0)out.textContent='Tap a piece below to get started.';
+  selected.forEach((index,place)=>{
+    const btn=document.createElement('button');btn.textContent=d.pieces[index];btn.disabled=buildSolved;
+    btn.addEventListener('click',()=>{selected.splice(place,1);renderPieces();});out.appendChild(btn);
+  });
+  d.pieces.forEach((piece,index)=>{
+    if(selected.includes(index))return;
+    const btn=document.createElement('button');btn.textContent=piece;btn.disabled=buildSolved;
+    btn.addEventListener('click',()=>{selected.push(index);renderPieces();});bank.appendChild(btn);
+  });
+}
+function showBuild(){
+  const d=missions[pos.build];selected=[];buildSolved=false;
+  el('buildLabel').textContent='Mission '+(pos.build+1)+' of '+missions.length;
+  el('buildGoal').textContent=d.goal;
+  el('buildFeedback').textContent='Build the code, then check your answer.';
+  el('buildNext').disabled=true;el('buildCheck').disabled=false;
+  renderPieces();
+}
+function checkBuild(){
+  if(buildSolved)return;
+  const d=missions[pos.build], sequence=selected.map(i=>d.pieces[i]);
+  const correct=sequence.length===d.answer.length&&sequence.every((x,i)=>x===d.answer[i]);
+  el('buildFeedback').textContent=correct?'✅ Correct! '+d.why:'Not quite! Tap your code pieces to remove them and try again.';
+  if(correct){buildSolved=true;awarded.build.add(pos.build);el('buildNext').disabled=false;el('buildCheck').disabled=true;renderPieces();updateScore();}
+}
+function reset(){
+  Object.values(awarded).forEach(set=>set.clear());pos.quiz=pos.bug=pos.build=0;
+  showMultiple('quiz');showMultiple('bug');showBuild();updateScore();
+  el('conversionResult').textContent='';el('timeResult').textContent='';
+}
+el('quizNext').addEventListener('click',()=>nextMultiple('quiz'));
+el('bugNext').addEventListener('click',()=>nextMultiple('bug'));
+el('buildCheck').addEventListener('click',checkBuild);
+el('buildClear').addEventListener('click',()=>{if(!buildSolved){selected=[];renderPieces();}});
+el('buildNext').addEventListener('click',()=>{pos.build=(pos.build+1)%missions.length;showBuild();});
+el('resetButton').addEventListener('click',reset);
+el('convertButton').addEventListener('click',()=>{
+  const raw=el('numberInput').value.trim(), n=Number(raw);
+  if(raw===''||!Number.isSafeInteger(n)||n<0){el('conversionResult').textContent='Please enter a nonnegative whole number (within JavaScript safe integer range).';return;}
+  el('conversionResult').textContent='Binary: 0b'+n.toString(2)+'   |   Octal: 0o'+n.toString(8)+'   |   Hex: 0x'+n.toString(16);
+});
+el('timeButton').addEventListener('click',()=>{
+  const raw=el('minutesInput').value.trim(), n=Number(raw);
+  el('timeResult').textContent=raw!==''&&Number.isSafeInteger(n)&&n>=0&&Number.isSafeInteger(n*60)?n+' minute(s) = '+(n*60)+' seconds.':'Please enter a nonnegative whole number of minutes.';
+});
+reset();
+</script>
+</body>
+</html>
