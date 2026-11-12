@@ -1,560 +1,72 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lesson 2 | Python Explorers</title>
-<style>
-*{box-sizing:border-box}
-body{
- margin:0;
- background:radial-gradient(circle at top left,#401b65,#0c1020 65%);
- color:#f8f8ff;
- font-family:Arial,sans-serif;
- line-height:1.5;
-}
-header,footer{text-align:center;padding:30px 15px}
-h1{color:#6ce8f0;font-size:clamp(30px,6vw,52px)}
-h2{color:#f77bdd}
-a{color:#6ce8f0}
-main{max-width:850px;margin:auto;padding:15px}
-section{
- background:#19223b;
- border:1px solid #3a4667;
- border-radius:20px;
- padding:24px;
- margin-bottom:24px;
-}
-.tag{color:#6ce8f0;font-weight:bold}
-pre{
- background:#080d1b;
- color:#bfffe9;
- padding:18px;
- border-radius:12px;
- white-space:pre-wrap;
- overflow-wrap:anywhere;
-}
-button{
- background:#293c60;
- color:white;
- border:1px solid #61779c;
- padding:13px 18px;
- margin:6px 4px;
- border-radius:11px;
- font-size:15px;
- cursor:pointer;
-}
-button:hover:not(:disabled){background:#365782}
-button:disabled{opacity:.5;cursor:default}
-.primary{
- background:#6ce8f0;
- color:#101827;
- font-weight:bold;
- border:0;
-}
-.choice{display:block;width:100%;text-align:left}
-.correct{background:#14674e!important}
-.wrong{background:#80344c!important}
-.feedback{
- min-height:50px;
- background:#263552;
- padding:13px;
- border-radius:10px;
- margin-top:15px;
-}
-.score{font-size:34px;color:#6beac3;font-weight:bold}
-.progress{
- height:12px;
- background:#354360;
- border-radius:20px;
- overflow:hidden;
-}
-#bar{
- width:0%;
- height:100%;
- background:linear-gradient(90deg,#f77bdd,#6ce8f0);
-}
-.tiles{display:flex;flex-wrap:wrap;gap:8px}
-.tile{font-family:monospace}
-#selected{
- min-height:70px;
- border:2px dashed #7183a5;
- border-radius:12px;
- padding:12px;
- margin:12px 0;
-}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111126">
+  <meta name="description" content="Python Explorers Book 1 • Lesson 01: fun interactive print() quizzes, code repair challenges and a mini-game.">
+  <title>Lesson 01 — Your First Python Program | Python Explorers</title>
+  <style>
+    :root {color-scheme:dark;--bg:#0c1020;--panel:#151d33;--panel2:#1c2845;--text:#f7f7ff;--muted:#b6c5db;--pink:#fa70e1;--cyan:#67e9f0;--green:#71eed3;--red:#ff9fba;--border:rgba(150,173,215,.24)}
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;font:16px/1.58 system-ui,-apple-system,Segoe UI,sans-serif;color:var(--text);background: radial-gradient(ellipse 60% 28% at 12% 0%,#411c6eaa,transparent 80%),radial-gradient(ellipse 54% 25% at 100% 0%,#07385499,transparent 80%),var(--bg)}
+    a{color:var(--cyan)}.shell{max-width:1060px;margin:auto;padding:0 20px 80px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:22px 0;border-bottom:1px solid var(--border)}
+    .brand{font-weight:900;color:white;text-decoration:none;letter-spacing:.02em}.brand span{color:var(--cyan)} .mini{font-size:.85rem;color:var(--muted)} .back{color:var(--text);text-decoration:none;font-weight:650;background:#263453;padding:8px 14px;border-radius:12px}
+    .hero{padding:56px 0 30px}.eyebrow{font-size:.79rem;letter-spacing:.17em;text-transform:uppercase;font-weight:800;color:var(--cyan)}h1{font-size:clamp(2.3rem,7vw,4.7rem);line-height:1.09;margin:12px 0;background:linear-gradient(110deg,#fff,#f59be9 44%,#6cecf1);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-.05em} h2{font-size:clamp(1.4rem,3vw,2rem);margin:0 0 8px}h3{margin:0 0 8px}p{margin:10px 0}.lede{font-size:1.1rem;color:var(--muted);max-width:760px}.stats{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}.chip{padding:9px 14px;border:1px solid var(--border);background:#1b2744;border-radius:14px;font-size:.91rem}
+    .layout{display:grid;grid-template-columns:1fr 260px;gap:22px;align-items:start}.stack{display:grid;gap:20px}.panel{background:linear-gradient(145deg,#1a2440,#131a2f);border:1px solid var(--border);border-radius:23px;padding:24px;box-shadow:0 20px 40px #0002}.panel p.desc{color:var(--muted);margin-bottom:18px}.smallhead{font-size:.77rem;letter-spacing:.1em;color:var(--cyan);font-weight:900;text-transform:uppercase}.code{background:#080e1e;border:1px solid #304264;padding:16px;border-radius:12px;white-space:pre-wrap;overflow-wrap:anywhere;font: .98rem/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;color:#dffaff;margin:12px 0 18px}.code .pink{color:var(--pink)}.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}button{font:inherit;cursor:pointer}.choice,.tile,.secondary,.primary{border:1px solid #43577c;padding:12px 14px;border-radius:13px;background:#273656;color:white;text-align:left;transition:.14s ease}.choice:hover:not(:disabled),.tile:hover:not(:disabled){border-color:var(--cyan);transform:translateY(-1px)}.choice:disabled,.tile:disabled{cursor:default;opacity:.86}.choice.correct{border-color:#32deb1;background:#174f49}.choice.wrong{border-color:#ff8ea8;background:#573047}.feedback{padding:13px 15px;border-radius:13px;margin-top:14px;background:#26314a;color:#f4fbff;min-height:48px}.feedback.good{border:1px solid #4cd9b2;background:#153d3a}.feedback.bad{border:1px solid #f188a0;background:#48273b}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}.primary{font-weight:800;color:#071b24;background:linear-gradient(110deg,var(--cyan),var(--green));border:none;text-align:center}.secondary{text-align:center;font-weight:700}.primary:disabled,.secondary:disabled{opacity:.45;cursor:not-allowed}.gamebox{background:#121e35;border:1px solid var(--border);border-radius:15px;padding:16px}.stage{font-weight:900;color:var(--cyan);font-size:.86rem}.tilebank,.assembled{display:flex;flex-wrap:wrap;gap:8px;min-height:65px;align-items:center}.tile{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-weight:700;padding:9px 13px;background:#273c5a}.assembled{border:2px dashed #567292;border-radius:12px;padding:10px;margin:12px 0;min-height:70px}.assembled .tile{background:#3b3265;border-color:#8b6ed6}.hint{font-size:.87rem;color:var(--muted)}.scorecard{position:sticky;top:15px}.score{font-size:2.3rem;font-weight:900;color:var(--green);line-height:1.15}.progress{background:#303c59;height:9px;border-radius:30px;overflow:hidden;margin:12px 0}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--cyan));transition:width .2s}.pointrow{display:flex;justify-content:space-between;font-size:.92rem;color:var(--muted);padding:10px 0;border-bottom:1px solid var(--border)}.status{font-size:.9rem;color:var(--muted)}.footer{font-size:.9rem;color:var(--muted);padding:34px 0;text-align:center} .kbd{font-family:monospace;background:#273451;border-radius:5px;padding:2px 5px} .sronly{position:absolute;left:-9999px} .warn{border-left:3px solid var(--pink);padding-left:10px;color:var(--muted)}
+    @media(max-width:780px){.layout{grid-template-columns:1fr}.scorecard{position:static;order:-1}.hero{padding-top:35px}.panel{padding:19px}.answers{grid-template-columns:1fr}.shell{padding:0 15px 45px}.mini{display:none}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+  </style>
 </head>
 <body>
-
-<header>
-<p class="tag">🐍 PYTHON EXPLORERS — BOOK 1</p>
-<h1>Variables, Types and User Input</h1>
-<p>LESSON 02 · INTERACTIVE CHALLENGES</p>
-<p>Three games. Twelve challenges. Let's go!</p>
-<a href="index.html">← All Lessons</a>
-</header>
-
-<main>
-
-<section>
-<h2>🏆 Your Scoreboard</h2>
-<div class="score" id="score">0 / 12</div>
-<div class="progress"><div id="bar"></div></div>
-<p id="status">Complete challenges to earn points!</p>
-<button onclick="resetAll()">Reset All Progress ↺</button>
-</section>
-
-<section>
-<p class="tag">GAME 1 — FIVE QUESTIONS</p>
-<h2>🔎 Variable Detective</h2>
-<p>Predict the output or identify the correct data type.</p>
-<h3 id="qNumber"></h3>
-<pre id="qCode"></pre>
-<div id="answers"></div>
-<div class="feedback" id="qFeedback">
-Choose the correct answer!
+<div class="shell">
+  <nav class="top" aria-label="Main navigation"><a class="brand" href="index.html">🐍 PYTHON <span>EXPLORERS</span></a><span class="mini">BOOK 1 · INTERACTIVE MISSIONS</span><a class="back" href="index.html">← All lessons</a></nav>
+  <header class="hero"><div class="eyebrow">Lesson 01 · Beginner Mission</div><h1>Your First<br>Python Program</h1><p class="lede">You've learnt how Python speaks through <strong>print()</strong>. Now prove your skills! Predict the output, repair broken code, and assemble a program. All challenges work right here in your browser.</p><div class="stats"><div class="chip">🔎 Output Detective</div><div class="chip">🐞 Bug Fixer</div><div class="chip">🧩 Code Builder</div></div></header>
+  <main class="layout"><div class="stack">
+    <section class="panel" id="detective" aria-labelledby="det-title"><div class="smallhead">Game 1 · 6 questions</div><h2 id="det-title">🔎 Output Detective</h2><p class="desc">Read the Python program. What will appear on the screen? Choose one answer.</p><div class="stage" id="q-count">Question 1 of 6</div><pre class="code" id="q-code"></pre><p id="q-prompt">Choose the correct output:</p><div class="answers" id="q-answers"></div><div class="feedback" id="q-feedback" role="status" aria-live="polite">Pick your answer to begin!</div><div class="actions"><button class="primary" id="q-next" disabled>Next question →</button><button class="secondary" id="q-restart">Restart game ↺</button></div></section>
+    <section class="panel" id="bugfix" aria-labelledby="bug-title"><div class="smallhead">Game 2 · 4 puzzles</div><h2 id="bug-title">🐞 Bug Fixer</h2><p class="desc">Oh no! These Python programs have a mistake. Choose the line that fixes the code.</p><div class="stage" id="b-count">Bug 1 of 4</div><pre class="code" id="b-code"></pre><div class="answers" id="b-answers"></div><div class="feedback" id="b-feedback" role="status" aria-live="polite">Find the fix!</div><div class="actions"><button class="primary" id="b-next" disabled>Next bug →</button><button class="secondary" id="b-restart">Restart game ↺</button></div></section>
+    <section class="panel" id="builder" aria-labelledby="build-title"><div class="smallhead">Game 3 · 3 missions</div><h2 id="build-title">🧩 Code Builder</h2><p class="desc">Tap the code tiles in the right order to complete each mission. Tap a selected tile to return it.</p><div class="gamebox"><div class="stage" id="c-count">Mission 1 of 3</div><h3 id="c-goal"></h3><div class="hint" id="c-hint"></div><div class="assembled" id="c-slots" aria-label="Your selected code tiles"></div><div class="hint">Available tiles:</div><div class="tilebank" id="c-bank"></div><div class="feedback" id="c-feedback" role="status" aria-live="polite">Assemble your code!</div><div class="actions"><button class="primary" id="c-check">Check my code ✓</button><button class="secondary" id="c-clear">Clear tiles</button><button class="secondary" id="c-next" disabled>Next mission →</button></div></div></section>
+    <section class="panel"><div class="smallhead">From your book</div><h2>📚 Remember these tricks</h2><p><span class="kbd">print("Hello!")</span> displays a message. Use <span class="kbd">sep=</span> to choose what separates values, <span class="kbd">end=</span> to change what comes after a print, and <span class="kbd">\n</span> to start a new line inside a string.</p><p class="warn">This is a practice page, not a Python code runner. You won't need to install anything or create an account.</p></section>
+  </div><aside class="panel scorecard" aria-labelledby="score-title"><div class="smallhead">Your mission results</div><h2 id="score-title">🏅 Scoreboard</h2><div class="score" id="total-points">0 / 13</div><div class="progress" role="progressbar" aria-label="Challenges completed correctly" aria-valuemin="0" aria-valuemax="13" aria-valuenow="0" id="progress"><div class="bar" id="progress-bar"></div></div><p class="status" id="score-message">Try all three games and see how many challenges you can solve.</p><div class="pointrow"><span>🔎 Output Detective</span><strong id="score-q">0 / 6</strong></div><div class="pointrow"><span>🐞 Bug Fixer</span><strong id="score-b">0 / 4</strong></div><div class="pointrow"><span>🧩 Code Builder</span><strong id="score-c">0 / 3</strong></div><div class="actions"><button class="secondary" id="reset-all">Reset all progress ↺</button></div></aside></main>
+  <footer class="footer">Made for <strong>Python Explorers — Book 1</strong> · Created by Rambod Jafari Nasab 🐍</footer>
 </div>
-<button class="primary" id="nextQuiz"
-onclick="nextQuestion()" disabled>
-Next Question →
-</button>
-</section>
-
-<section>
-<p class="tag">GAME 2 — FOUR BUGS</p>
-<h2>🐛 Bug Fixer</h2>
-<p>Find the error and choose the correct Python code!</p>
-<h3 id="bNumber"></h3>
-<pre id="bCode"></pre>
-<div id="bugAnswers"></div>
-<div class="feedback" id="bFeedback">
-Find the mistake!
-</div>
-<button class="primary" id="nextBug"
-onclick="nextBug()" disabled>
-Next Bug →
-</button>
-</section>
-
-<section>
-<p class="tag">GAME 3 — THREE MISSIONS</p>
-<h2>🧩 Code Builder</h2>
-<p>Tap the code pieces in the correct order!</p>
-<h3 id="missionNumber"></h3>
-<p id="missionGoal"></p>
-<p id="missionHint"></p>
-
-<h3>Your Code</h3>
-<div class="tiles" id="selected"></div>
-
-<h3>Available Pieces</h3>
-<div class="tiles" id="pieces"></div>
-
-<div class="feedback" id="buildFeedback">
-Build your Python program!
-</div>
-
-<button class="primary" onclick="checkBuild()">
-Check My Code ✓
-</button>
-<button onclick="clearBuild()">Clear</button>
-<button id="nextMission" onclick="nextMission()" disabled>
-Next Mission →
-</button>
-</section>
-
-<section>
-<h2>🎉 Mission Complete?</h2>
-<p id="finalMessage">
-Complete all 12 challenges to master Lesson 2!
-</p>
-</section>
-
-</main>
-
-<footer>
-<p>Created by Rambod Jafari Nasab 🚀</p>
-<p>Python Explorers — Book 1</p>
-</footer>
-
 <script>
-"use strict";
-
-const questions=[
-{
- code:'name = "Rambod"\nage = 15\nprint(name, age)',
- options:[
- "name age",
- "Rambod 15",
- "Rambod age",
- "Error"
- ],
- correct:1,
- explanation:"Python prints the values stored in the variables."
-},
-{
- code:'number = "10"\nprint(number * 3)',
- options:[
- "30",
- "101010",
- "13",
- "Error"
- ],
- correct:1,
- explanation:"A string repeated three times produces 101010."
-},
-{
- code:'price = 12.50\nprint(type(price).__name__)',
- options:["int","str","float","bool"],
- correct:2,
- explanation:"Decimal numbers are normally stored as floats."
-},
-{
- code:'number = "10"\nprint(int(number) + 5)',
- options:["105","50","15","Error"],
- correct:2,
- explanation:"int() converts suitable numeric text into an integer."
-},
-{
- code:'age = 12\nage = age + 1\nprint(age)',
- options:["12","13","121","Error"],
- correct:1,
- explanation:"The second assignment increases age by one."
-}
+'use strict';
+// All checks are deterministic teaching games: this page DOES NOT execute Python code.
+const quiz = [
+ {code:'print("Hello, Explorer!")',opts:['"Hello, Explorer!"','Hello, Explorer!','print("Hello, Explorer!")','Hello Explorer'],right:1,why:'Python displays the words inside the quotation marks, but not the quotation marks themselves.'},
+ {code:'print("Rome", "Milan", "Naples", sep=" | ")',opts:['RomeMilanNaples','Rome, Milan, Naples','Rome | Milan | Naples','Rome / Milan / Naples'],right:2,why:'sep=" | " places a space, vertical bar, and space between the city names.'},
+ {code:'print("Ready", end="... ")\nprint("Go!")',opts:['Ready... Go!','Ready\nGo!','ReadyGo!','Ready ...\nGo!'],right:0,why:'end="... " stops the first print from adding its usual new line.'},
+ {code:'print(7 % 3)',opts:['2','1','3','7'],right:1,why:'7 divided by 3 leaves a remainder of 1. The % operator finds that remainder.'},
+ {code:'print(2 + 5 * (3 + 1))',opts:['28','22','32','15'],right:1,why:'Parentheses first: 3+1=4. Then 5×4=20. Finally 2+20=22.'},
+ {code:'print("First line\\nSecond line")',opts:['First line\\nSecond line','First line Second line','First line\nSecond line','Second line\nFirst line'],right:2,why:'The escape sequence \\n starts a new line inside the displayed string.'}
 ];
-
-const bugs=[
-{
- code:'1name = "Alex"',
- options:[
- 'name1 = "Alex"',
- '1name = "Alex"',
- 'name-1 = "Alex"',
- 'if = "Alex"'
- ],
- correct:0,
- explanation:"Variable names cannot begin with a number."
-},
-{
- code:'age = input("Age: ")\nprint(age + 1)',
- options:[
- 'print(int(age) + 1)',
- 'print(age + "1")',
- 'print(age + 1)',
- 'print(str(age) + 1)'
- ],
- correct:0,
- explanation:"input() returns a string. Convert it to int first."
-},
-{
- code:'name = "Rambod"\nprint(Name)',
- options:[
- 'print(name)',
- 'print(NAME)',
- 'print(Name)',
- 'print("name")'
- ],
- correct:0,
- explanation:"Python is case-sensitive: Name and name differ."
-},
-{
- code:'price = "12.50"\nprint(price + 2)',
- options:[
- 'print(float(price) + 2)',
- 'print(price + 2)',
- 'print(int(price) + 2)',
- 'print(price * 2)'
- ],
- correct:0,
- explanation:"float() converts decimal text for arithmetic."
-}
+const bugs = [
+ {bad:'print("Hello!)',opts:['print("Hello!")','print(Hello!)','Print("Hello!")','print("Hello!"'],right:0,why:'Text needs matching quotation marks and print needs a closing parenthesis.'},
+ {bad:'print("My age is" 15)',opts:['print("My age is" + 15)','print("My age is", 15)','print("My age is": 15)','print "My age is", 15'],right:1,why:'Use a comma between two values in a print statement.'},
+ {bad:'print("Rome", "Venice", sep:" → ")',opts:['print("Rome", "Venice", sep+" → ")','print("Rome", "Venice", sep=" → ")','print("Rome", "Venice", sep:" → ")','print("Rome", "Venice" = " → ")'],right:1,why:'Keyword arguments such as sep use an equals sign.'},
+ {bad:'print("Loading", end:"...")',opts:['print("Loading", end="...")','print("Loading", end=="...")','print("Loading", end: "...")','print("Loading"; end="...")'],right:0,why:'Use end="..." to control what follows the printed message.'}
 ];
-
-const missions=[
-{
- goal:"Create a variable named age with value 12.",
- hint:"Use the assignment operator =.",
- pieces:["12","age","="],
- answer:["age","=","12"]
-},
-{
- goal:"Ask the user for their name and store it.",
- hint:"Use input() with a text prompt.",
- pieces:[
- 'input("Your name? ")',
- "=",
- "name"
- ],
- answer:[
- "name",
- "=",
- 'input("Your name? ")'
- ]
-},
-{
- goal:"Print the next age after converting text to a number.",
- hint:"Convert age using int(), then add 1.",
- pieces:[
- "1",
- "int(age)",
- "+",
- ")",
- "print",
- "("
- ],
- answer:[
- "print",
- "(",
- "int(age)",
- "+",
- "1",
- ")"
- ]
-}
+const builders = [
+ {goal:'Show Hello, Explorer! on the screen',hint:'Remember: text belongs inside quotes.',pieces:['(', '"Hello, Explorer!"', 'print', ')'],correct:['print','(','"Hello, Explorer!"',')'],why:'You wrote print("Hello, Explorer!") — a complete Python print statement.'},
+ {goal:'Print 1-2-3 on one line',hint:'Use sep="-" so the numbers are separated by dashes.',pieces:[')', 'sep="-"', 'print', '(', '1, 2, 3,'],correct:['print','(','1, 2, 3,','sep="-"',')'],why:'Perfect! sep="-" joins each printed number with a dash.'},
+ {goal:'Print Ready... without a new line',hint:'Use the end argument to replace the usual new line.',pieces:['end="..."', ')', 'print', '"Ready",', '('],correct:['print','(','"Ready",','end="..."',')'],why:'Exactly! end="..." changes the normal end of print.'}
 ];
-
-let qi=0,bi=0,mi=0;
-let quizAnswered=false;
-let bugAnswered=false;
-let missionSolved=false;
-
-const solvedQ=new Set();
-const solvedB=new Set();
-const solvedM=new Set();
-let chosen=[];
-
-const get=id=>document.getElementById(id);
-
-function updateScore(){
- const total=solvedQ.size+solvedB.size+solvedM.size;
- get("score").textContent=total+" / 12";
- get("bar").style.width=(total/12*100)+"%";
-
- get("status").textContent=
- total===12?"PERFECT SCORE! 🏆":
- total>=8?"Amazing work! 🌟":
- total>=4?"Keep going, Explorer! 🚀":
- "Complete challenges to earn points!";
-
- get("finalMessage").textContent=
- total===12
- ? "🏆 Congratulations! You completed Lesson 2!"
- : total+" of 12 challenges completed correctly.";
-}
-
-function showChoices(container,options,correct,onAnswer){
- const area=get(container);
- area.replaceChildren();
-
- options.forEach((answer,i)=>{
-  const button=document.createElement("button");
-  button.className="choice";
-  button.textContent=answer;
-  button.onclick=()=>{
-   if(!onAnswer(i))return;
-
-   [...area.children].forEach((b,j)=>{
-    b.disabled=true;
-    if(j===correct)b.classList.add("correct");
-    if(j===i&&i!==correct)b.classList.add("wrong");
-   });
-  };
-  area.appendChild(button);
- });
-}
-
-function showQuestion(){
- quizAnswered=false;
- const q=questions[qi];
-
- get("qNumber").textContent=
- "Question "+(qi+1)+" of "+questions.length;
- get("qCode").textContent=q.code;
- get("qFeedback").textContent="Choose the correct answer!";
- get("nextQuiz").disabled=true;
-
- showChoices("answers",q.options,q.correct,i=>{
-  if(quizAnswered)return false;
-  quizAnswered=true;
-
-  const right=i===q.correct;
-  if(right)solvedQ.add(qi);
-
-  get("qFeedback").textContent=
-  (right?"✅ Correct! ":"💡 Not quite. ")+q.explanation;
-
-  get("nextQuiz").disabled=false;
-  updateScore();
-  return true;
- });
-}
-
-function nextQuestion(){
- qi++;
- if(qi>=questions.length){
-  qi=0;
-  solvedQ.clear();
- }
- showQuestion();
- updateScore();
-}
-
-function showBug(){
- bugAnswered=false;
- const b=bugs[bi];
-
- get("bNumber").textContent=
- "Bug "+(bi+1)+" of "+bugs.length;
- get("bCode").textContent=b.code;
- get("bFeedback").textContent="Find the correct fix!";
- get("nextBug").disabled=true;
-
- showChoices("bugAnswers",b.options,b.correct,i=>{
-  if(bugAnswered)return false;
-  bugAnswered=true;
-
-  const right=i===b.correct;
-  if(right)solvedB.add(bi);
-
-  get("bFeedback").textContent=
-  (right?"✅ Bug fixed! ":"💡 Learn from this: ")+
-  b.explanation;
-
-  get("nextBug").disabled=false;
-  updateScore();
-  return true;
- });
-}
-
-function nextBug(){
- bi++;
- if(bi>=bugs.length){
-  bi=0;
-  solvedB.clear();
- }
- showBug();
- updateScore();
-}
-
-function renderTiles(){
- const mission=missions[mi];
- const selectedArea=get("selected");
- const bank=get("pieces");
-
- selectedArea.replaceChildren();
- bank.replaceChildren();
-
- chosen.forEach((originalIndex,pos)=>{
-  const button=document.createElement("button");
-  button.className="tile";
-  button.textContent=mission.pieces[originalIndex];
-  button.disabled=missionSolved;
-  button.onclick=()=>{
-   chosen.splice(pos,1);
-   renderTiles();
-  };
-  selectedArea.appendChild(button);
- });
-
- mission.pieces.forEach((piece,index)=>{
-  if(chosen.includes(index))return;
-
-  const button=document.createElement("button");
-  button.className="tile";
-  button.textContent=piece;
-  button.disabled=missionSolved;
-  button.onclick=()=>{
-   chosen.push(index);
-   renderTiles();
-  };
-  bank.appendChild(button);
- });
-
- if(chosen.length===0){
-  selectedArea.textContent="Tap code pieces below...";
- }
-}
-
-function showMission(){
- const mission=missions[mi];
- chosen=[];
- missionSolved=false;
-
- get("missionNumber").textContent=
- "Mission "+(mi+1)+" of "+missions.length;
- get("missionGoal").textContent=mission.goal;
- get("missionHint").textContent=mission.hint;
- get("buildFeedback").textContent="Build your Python program!";
- get("nextMission").disabled=true;
-
- renderTiles();
-}
-
-function checkBuild(){
- if(missionSolved)return;
-
- const mission=missions[mi];
- const answer=chosen.map(i=>mission.pieces[i]);
-
- const right=
- answer.length===mission.answer.length &&
- answer.every((x,i)=>x===mission.answer[i]);
-
- if(right){
-  missionSolved=true;
-  solvedM.add(mi);
-
-  get("buildFeedback").textContent=
-  "✅ Perfect! You built the correct Python code!";
-  get("nextMission").disabled=false;
-
-  renderTiles();
-  updateScore();
- }else{
-  get("buildFeedback").textContent=
-  "❌ Not quite! Try rearranging the pieces.";
- }
-}
-
-function clearBuild(){
- if(missionSolved)return;
- chosen=[];
- renderTiles();
- get("buildFeedback").textContent="Try again!";
-}
-
-function nextMission(){
- mi++;
- if(mi>=missions.length){
-  mi=0;
-  solvedM.clear();
- }
- showMission();
- updateScore();
-}
-
-function resetAll(){
- qi=0;
- bi=0;
- mi=0;
-
- solvedQ.clear();
- solvedB.clear();
- solvedM.clear();
-
- showQuestion();
- showBug();
- showMission();
- updateScore();
-}
-
-showQuestion();
-showBug();
-showMission();
-updateScore();
+const el=id=>document.getElementById(id);
+const state={q:{idx:0,earned:new Set(),answered:false},b:{idx:0,earned:new Set(),answered:false},c:{idx:0,earned:new Set(),selected:[],done:false}};
+function updateScore(){let a=state.q.earned.size,b=state.b.earned.size,c=state.c.earned.size,n=a+b+c;el('total-points').textContent=n+' / 13';el('score-q').textContent=a+' / 6';el('score-b').textContent=b+' / 4';el('score-c').textContent=c+' / 3';el('progress').setAttribute('aria-valuenow',n);el('progress-bar').style.width=(n/13*100)+'%';el('score-message').textContent=n===13?'Amazing! Full marks, Python Explorer! 🎉':n>=9?'Great job! Keep going! 🌟':n>=4?'Nice progress — you are learning! 🚀':'Try all three games and see how many challenges you can solve.'}
+function feedback(target,msg,kind){target.textContent=msg;target.className='feedback'+(kind?' '+kind:'')}
+function renderMC(kind){const isQ=kind==='q',ds=isQ?quiz:bugs,s=state[kind],item=ds[s.idx],prefix=kind;el(prefix+'-count').textContent=(isQ?'Question ':'Bug ')+(s.idx+1)+' of '+ds.length;el(prefix+'-code').textContent=isQ?item.code:'❌ '+item.bad;const area=el(prefix+'-answers');area.replaceChildren();item.opts.forEach((answer,i)=>{const bt=document.createElement('button');bt.type='button';bt.className='choice';bt.textContent=answer;bt.setAttribute('aria-label','Option '+(i+1)+': '+answer);bt.onclick=()=>{if(s.answered)return;s.answered=true;const good=i===item.right;if(good)s.earned.add(s.idx);Array.from(area.children).forEach((node,j)=>{node.disabled=true;if(j===item.right)node.classList.add('correct');if(j===i&&!good)node.classList.add('wrong')});feedback(el(prefix+'-feedback'),(good?'✅ Correct! ':'💡 Good try! ')+item.why,good?'good':'bad');el(prefix+'-next').disabled=false;el(prefix+'-next').textContent=s.idx===ds.length-1?'Play again ↺':isQ?'Next question →':'Next bug →';updateScore()};area.appendChild(bt)});s.answered=false;feedback(el(prefix+'-feedback'),isQ?'Pick your answer to begin!':'Find the fix!','');el(prefix+'-next').disabled=true;el(prefix+'-next').textContent=isQ?'Next question →':'Next bug →'}
+function advanceMC(kind){let s=state[kind],max=kind==='q'?quiz.length:bugs.length;s.idx=(s.idx+1)%max;if(s.idx===0)s.earned.clear();renderMC(kind);updateScore()}
+function clearTiles(){state.c.selected=[];state.c.done=false;drawTiles();feedback(el('c-feedback'),'Assemble your code!','')}
+function drawTiles(){const s=state.c,mission=builders[s.idx],slots=el('c-slots'),bank=el('c-bank');slots.replaceChildren();bank.replaceChildren();s.selected.forEach((originalIndex,pos)=>{const bt=document.createElement('button');bt.className='tile';bt.textContent=mission.pieces[originalIndex];bt.disabled=s.done;bt.title='Tap to remove';bt.onclick=()=>{s.selected.splice(pos,1);drawTiles()};slots.appendChild(bt)});mission.pieces.forEach((piece,idx)=>{if(s.selected.includes(idx))return;const bt=document.createElement('button');bt.className='tile';bt.textContent=piece;bt.disabled=s.done;bt.onclick=()=>{s.selected.push(idx);drawTiles()};bank.appendChild(bt)});if(!s.selected.length)slots.textContent='Tap tiles below to build the program…'}
+function renderBuilder(){const s=state.c,m=builders[s.idx];el('c-count').textContent='Mission '+(s.idx+1)+' of '+builders.length;el('c-goal').textContent=m.goal;el('c-hint').textContent=m.hint;el('c-check').disabled=false;el('c-clear').disabled=false;el('c-next').disabled=true;el('c-next').textContent=s.idx===builders.length-1?'Play again ↺':'Next mission →';s.selected=[];s.done=false;drawTiles();feedback(el('c-feedback'),'Assemble your code!','')}
+el('c-check').onclick=()=>{const s=state.c,m=builders[s.idx],answer=s.selected.map(i=>m.pieces[i]);const success=answer.length===m.correct.length&&answer.every((x,i)=>x===m.correct[i]);if(success){s.done=true;s.earned.add(s.idx);feedback(el('c-feedback'),'✅ '+m.why,'good');el('c-next').disabled=false;el('c-check').disabled=true;el('c-clear').disabled=true;drawTiles();updateScore()}else{feedback(el('c-feedback'),'Not quite! Read the hint and rearrange your tiles. You can do it!','bad')}};
+el('c-clear').onclick=clearTiles;
+el('c-next').onclick=()=>{const s=state.c;s.idx=(s.idx+1)%builders.length;if(s.idx===0)s.earned.clear();renderBuilder();updateScore()};
+for(const x of ['q','b']){el(x+'-next').onclick=()=>advanceMC(x);el(x+'-restart').onclick=()=>{state[x].idx=0;state[x].earned.clear();renderMC(x);updateScore()}}
+el('reset-all').onclick=()=>{for(const x of ['q','b']){state[x].idx=0;state[x].earned.clear();renderMC(x)}state.c.idx=0;state.c.earned.clear();renderBuilder();updateScore()};
+renderMC('q');renderMC('b');renderBuilder();updateScore();
 </script>
-
 </body>
 </html>
+
