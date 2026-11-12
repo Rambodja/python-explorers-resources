@@ -1,1 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1226">
+<title>Final Boss — 20 Questions | Python Explorers</title>
+<style>
+:root{--bg:#0b1226;--panel:#18223c;--border:#405176;--cyan:#82eefa;--pink:#ff9fe6;--green:#8ff2c3;--text:#f1f6ff;--muted:#c4cee3}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top left,#38205a,var(--bg) 55%);color:var(--text);font:16px/1.55 system-ui,Segoe UI,Arial,sans-serif}
+header{text-align:center;padding:45px 18px 28px}h1{font-size:clamp(2.2rem,7vw,4rem);color:var(--cyan);margin:10px 0;line-height:1.1}h2{color:var(--pink);margin-top:0}
+a{color:var(--cyan)}.eyebrow{color:var(--cyan);font-size:.84rem;letter-spacing:.14em;font-weight:800}
+.shell{max-width:900px;margin:0 auto;padding:12px 18px 65px}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:clamp(18px,4vw,32px);margin:20px 0;box-shadow:0 15px 35px #04091460}
+.lede,.muted{color:var(--muted)}.tiny{font-size:.89rem}
+.nav{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin-top:20px}.nav a{border:1px solid #62749c;border-radius:50px;padding:7px 14px;text-decoration:none}
+.toprow{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.score{font-size:2.2rem;color:var(--green);font-weight:850}.meter{width:100%;height:13px;background:#30405e;border-radius:30px;overflow:hidden}.meter div{height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--cyan));transition:width .2s}
+.tag{color:var(--cyan);font-weight:800;letter-spacing:.06em;font-size:.83rem;text-transform:uppercase}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0c152a;color:#bfffe5;border:1px solid #40577f;border-radius:12px;padding:20px;font:15px/1.65 Consolas,monospace}
+.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+button,.button{font:inherit;font-weight:750;background:#32436b;color:white;border:1px solid #6a80a5;border-radius:11px;padding:13px 16px;cursor:pointer}
+.options button{text-align:left;min-height:60px;overflow-wrap:anywhere;white-space:pre-wrap}
+button:hover:not(:disabled){filter:brightness(1.18)}button:focus-visible,a:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}button:disabled{opacity:.65;cursor:default}
+button.correct{background:#11614d;border-color:var(--green);opacity:1}button.wrong{background:#703248;border-color:#ff8eaa;opacity:1}
+.primary,.button{background:var(--cyan);color:#102034;border-color:var(--cyan);text-decoration:none;display:inline-block}.actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-top:18px}
+.feedback{min-height:58px;padding:15px;border-radius:12px;background:#243653;margin:18px 0}.feedback.success{border:1px solid #4edb9f}.feedback.fail{border:1px solid #e685ab}
+.hidden{display:none!important}
+input,select{font:inherit;color:var(--text);background:#0c152a;border:1px solid #7086a7;border-radius:9px;padding:10px;max-width:100%}
+.fields{display:flex;gap:13px;flex-wrap:wrap;align-items:end}.fields label{display:flex;flex-direction:column;gap:4px;min-width:150px;flex:1}
+#plan{max-height:370px;overflow:auto}.checklist label{display:flex;align-items:center;gap:12px;padding:8px 0}.checklist input{accent-color:var(--cyan);width:21px;height:21px;flex:0 0 auto}
+.note{background:#273451;border-radius:12px;border:1px solid #5b6c8b;padding:12px}
+footer{text-align:center;padding:32px;color:var(--muted);border-top:1px solid var(--border)}
+@media(max-width:620px){.options{grid-template-columns:1fr}.shell{padding:10px 12px 35px}header{padding:32px 12px 15px}}
+</style>
+</head>
+<body>
+<header>
+<div class="eyebrow">🐍 PYTHON EXPLORERS · BOOK 1</div>
+<h1>👾 FINAL BOSS</h1>
+<p class="lede">20 questions · All your Python skills · One final victory!</p>
+<nav class="nav"><a href="index.html">⌂ All Lessons</a><a href="Lesson_21.html">← Lesson 21</a></nav>
+</header>
+<main class="shell">
+<section class="panel" id="quiz-section">
+<div class="toprow"><div><div class="tag">⚔️ Final Boss Challenge</div><h2>Can You Beat All 20 Questions?</h2></div><div><div class="muted tiny">Your score</div><div id="score" class="score" aria-live="polite">0 / 20</div></div></div>
+<div class="meter" role="progressbar" aria-label="Questions answered" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0" id="meter"><div id="bar"></div></div>
+<p class="muted" id="progress">Question 1 of 20</p>
+<div id="questionScreen"><p class="tag" id="topic"></p><h3 id="question"></h3><pre id="code"></pre><div class="options" id="answers"></div><div class="feedback" id="feedback" aria-live="polite">Choose an answer to defeat this challenge!</div><div class="actions"><button id="next" class="primary" disabled>Next Question →</button><button id="restart">Start Over ↺</button></div></div>
+<div id="finished" class="hidden" aria-live="polite"><h2 id="finishTitle"></h2><p id="finishDetails"></p><div class="actions"><button id="playAgain" class="primary">Play Again ↺</button><a href="#project" class="button">Create your final logo plan ↓</a></div></div>
+</section>
+<section class="panel" id="project">
+<div class="tag">🎨 Final Project · Turtle Logo Studio</div><h2>Design Your Own Logo</h2>
+<p>Finished the questions? Plan the Turtle logo from the last lesson. This is a project planner, <strong>not</strong> a Python runner or Turtle simulator.</p>
+<div class="fields"><label>Logo name<input id="logoName" maxlength="40" value="Star Explorer" placeholder="Star Explorer"></label><label>Colour theme<select id="colour"><option>cyan</option><option>purple</option><option>gold</option><option>green</option><option>pink</option></select></label><label>Polygon sides<input id="sides" type="number" min="3" max="12" step="1" value="5"></label></div>
+<div class="actions"><button id="makePlan" class="primary">Generate Project Plan</button><button id="copyPlan">Copy Plan</button></div>
+<pre id="plan" aria-live="polite">Choose your options and click Generate Project Plan.</pre><p class="tiny muted" id="copyMsg" aria-live="polite"></p>
+</section>
+<section class="panel checklist"><h2>✅ Real-World Final Project Checklist</h2>
+<p>Tick a step after completing it in Python on your own computer.</p>
+<label><input type="checkbox" class="tick"> I chose my logo colours and shape.</label>
+<label><input type="checkbox" class="tick"> I wrote a loop to draw a polygon.</label>
+<label><input type="checkbox" class="tick"> I tested my drawing and fixed errors.</label>
+<label><input type="checkbox" class="tick"> I improved an angle, size or other design detail.</label>
+<label><input type="checkbox" class="tick"> I can explain my completed logo to somebody.</label>
+<p id="checkStatus" class="muted">0 of 5 steps completed.</p>
+<div class="note tiny">Remember: the website checks quiz answers, but only you can confirm that you've built your own Turtle project.</div>
+</section>
+</main>
+<footer>Created by Rambod Jafari Nasab · Python Explorers — Book 1</footer>
+<script>
+"use strict";
+const questions = [
+  {
+    "topic": "Lesson 1 · Printing",
+    "question": "What does this print?",
+    "code": "print(\"Rome\", \"Milan\", sep=\" / \")",
+    "options": [
+      "Rome Milan",
+      "Rome / Milan",
+      "Rome, Milan",
+      "Rome/Milan/"
+    ],
+    "correct": 1,
+    "explanation": "The sep argument inserts the chosen separator between printed values."
+  },
+  {
+    "topic": "Lesson 2 · Variables",
+    "question": "What appears on the screen?",
+    "code": "name = \"Rambod\"\nage = 12\nprint(name, age + 1)",
+    "options": [
+      "Rambod 12",
+      "name 13",
+      "Rambod 13",
+      "Error"
+    ],
+    "correct": 2,
+    "explanation": "Python reads the stored variable values and calculates 12 + 1."
+  },
+  {
+    "topic": "Lesson 3 · Decisions",
+    "question": "Which message appears?",
+    "code": "score = 10\nif score >= 10:\n    print(\"Win\")\nelse:\n    print(\"Try again\")",
+    "options": [
+      "Win",
+      "Try again",
+      "10",
+      "Nothing"
+    ],
+    "correct": 0,
+    "explanation": ">= means greater than or equal to, so 10 meets the condition."
+  },
+  {
+    "topic": "Lesson 4 · Calculator",
+    "question": "What is the result?",
+    "code": "print(12 / 4)",
+    "options": [
+      "3",
+      "3.0",
+      "4",
+      "Error"
+    ],
+    "correct": 1,
+    "explanation": "The / operator produces a floating-point division result in Python 3."
+  },
+  {
+    "topic": "Lesson 5 · for and range",
+    "question": "Which numbers print?",
+    "code": "for i in range(2, 8, 2):\n    print(i)",
+    "options": [
+      "2, 4, 6",
+      "2, 4, 6, 8",
+      "2, 3, 4, 5, 6, 7",
+      "4, 6, 8"
+    ],
+    "correct": 0,
+    "explanation": "range starts at 2, increases by 2 and stops before 8."
+  },
+  {
+    "topic": "Lesson 6 · while Loops",
+    "question": "What is printed after the loop?",
+    "code": "count = 1\nwhile count < 4:\n    count += 1\nprint(count)",
+    "options": [
+      "1",
+      "3",
+      "4",
+      "The loop never ends"
+    ],
+    "correct": 2,
+    "explanation": "The loop increases count until it reaches 4, then stops."
+  },
+  {
+    "topic": "Lesson 7 · Nested Loops",
+    "question": "What pattern appears?",
+    "code": "for row in range(2):\n    for col in range(3):\n        print(\"X\", end=\"\")\n    print()",
+    "options": [
+      "XXX\\nXXX",
+      "XX\\nXX\\nXX",
+      "XXXXXX on one line",
+      "X\\nX\\nX"
+    ],
+    "correct": 0,
+    "explanation": "The inner loop prints three X characters; the outer loop creates two rows."
+  },
+  {
+    "topic": "Lesson 8 · Number Guessing",
+    "question": "Which hint should the program display?",
+    "code": "secret = 50\nguess = 42\nif guess < secret:\n    print(\"Too low\")\nelse:\n    print(\"Not too low\")",
+    "options": [
+      "Too high",
+      "Too low",
+      "Correct",
+      "Error"
+    ],
+    "correct": 1,
+    "explanation": "42 is below the secret number 50."
+  },
+  {
+    "topic": "Lesson 9 · Libraries",
+    "question": "What does math.sqrt(81) return?",
+    "code": "import math\nprint(math.sqrt(81))",
+    "options": [
+      "81",
+      "9",
+      "9.0",
+      "8.1"
+    ],
+    "correct": 2,
+    "explanation": "math.sqrt returns a floating-point square root, which is 9.0 here."
+  },
+  {
+    "topic": "Lesson 10 · Turtle Directions",
+    "question": "What does this command do?",
+    "code": "turtle.right(90)",
+    "options": [
+      "Moves forward 90 pixels",
+      "Turns clockwise by 90 degrees",
+      "Turns left by 90 degrees",
+      "Draws a circle"
+    ],
+    "correct": 1,
+    "explanation": "right(90) rotates the turtle clockwise by 90 degrees."
+  },
+  {
+    "topic": "Lesson 11 · Number Bases",
+    "question": "Which binary string is printed?",
+    "code": "print(bin(6))",
+    "options": [
+      "110",
+      "0b110",
+      "0x6",
+      "0o6"
+    ],
+    "correct": 1,
+    "explanation": "bin adds the 0b prefix to the binary representation of an integer."
+  },
+  {
+    "topic": "Lesson 12 · Rotating Squares",
+    "question": "What is the next square size?",
+    "code": "size = 100\nsize = size * 0.91\nprint(size)",
+    "options": [
+      "100.91",
+      "91.0",
+      "9.1",
+      "90.0"
+    ],
+    "correct": 1,
+    "explanation": "Multiplying by 0.91 makes the next square 91% of the previous size."
+  },
+  {
+    "topic": "Lesson 13 · Lists",
+    "question": "What is printed?",
+    "code": "colours = [\"red\", \"green\", \"blue\"]\nprint(colours[1])",
+    "options": [
+      "red",
+      "green",
+      "blue",
+      "1"
+    ],
+    "correct": 1,
+    "explanation": "Python list indexing starts from zero, so index 1 is the second item."
+  },
+  {
+    "topic": "Lesson 14 · List Methods",
+    "question": "What is the list after remove()?",
+    "code": "colours = [\"red\", \"blue\", \"red\"]\ncolours.remove(\"red\")\nprint(colours)",
+    "options": [
+      "[\"blue\", \"red\"]",
+      "[\"blue\"]",
+      "[\"red\", \"blue\"]",
+      "[\"red\"]"
+    ],
+    "correct": 0,
+    "explanation": "remove deletes only the first matching item."
+  },
+  {
+    "topic": "Lesson 15 · List Slicing",
+    "question": "What does this slice return?",
+    "code": "numbers = [10, 20, 30, 40]\nprint(numbers[1:3])",
+    "options": [
+      "[10, 20, 30]",
+      "[20, 30, 40]",
+      "[20, 30]",
+      "[10, 20]"
+    ],
+    "correct": 2,
+    "explanation": "Slicing includes the start index 1 and excludes the stop index 3."
+  },
+  {
+    "topic": "Lesson 16 · Student Records",
+    "question": "What class average is printed?",
+    "code": "marks = [80, 90, 100]\nprint(sum(marks) / len(marks))",
+    "options": [
+      "90",
+      "90.0",
+      "270",
+      "3"
+    ],
+    "correct": 1,
+    "explanation": "The average is 270 / 3 = 90.0."
+  },
+  {
+    "topic": "Lesson 17 · Strings",
+    "question": "What text does the slice select?",
+    "code": "word = \"PYTHON\"\nprint(word[:3])",
+    "options": [
+      "PYT",
+      "YTH",
+      "PYTH",
+      "HON"
+    ],
+    "correct": 0,
+    "explanation": "The slice starts at index 0 and stops before index 3."
+  },
+  {
+    "topic": "Lesson 18 · String Methods",
+    "question": "What is printed?",
+    "code": "text = \"  Python  \"\nprint(text.strip().lower())",
+    "options": [
+      "  python  ",
+      "PYTHON",
+      "python",
+      "Python"
+    ],
+    "correct": 2,
+    "explanation": "strip removes surrounding spaces; lower makes the letters lowercase."
+  },
+  {
+    "topic": "Lesson 19 · Common Errors",
+    "question": "What message appears?",
+    "code": "try:\n    age = int(\"oops\")\nexcept ValueError:\n    print(\"Invalid number\")",
+    "options": [
+      "oops",
+      "0",
+      "Invalid number",
+      "Nothing"
+    ],
+    "correct": 2,
+    "explanation": "int(\"oops\") raises a ValueError, which the except block handles."
+  },
+  {
+    "topic": "Lessons 20–21 · Dictionary + Logo",
+    "question": "What exterior turning angle is printed?",
+    "code": "logo = {\"sides\": 5, \"colour\": \"cyan\"}\nprint(360 / logo[\"sides\"])",
+    "options": [
+      "5.0",
+      "360.0",
+      "72",
+      "72.0"
+    ],
+    "correct": 3,
+    "explanation": "A regular five-sided logo has an exterior turn of 360 / 5 = 72.0 degrees."
+  }
+];
+const el = id => document.getElementById(id);
+let current=0,points=0,answered=false,planText="";
+function renderQuestion(){
+  answered=false;
+  const q=questions[current];
+  el("finished").classList.add("hidden");
+  el("questionScreen").classList.remove("hidden");
+  el("topic").textContent=q.topic;
+  el("question").textContent=q.question;
+  el("code").textContent=q.code;
+  el("feedback").textContent="Choose the best answer!";
+  el("feedback").className="feedback";
+  el("next").disabled=true;
+  el("next").textContent=current===questions.length-1?"See My Results 🏆":"Next Question →";
+  el("progress").textContent="Question "+(current+1)+" of "+questions.length;
+  el("answers").replaceChildren();
+  q.options.forEach((option,i)=>{
+    const button=document.createElement("button");
+    button.type="button";
+    button.textContent=option.split(String.fromCharCode(92)+"n").join(String.fromCharCode(10));
+    button.addEventListener("click",()=>choose(i));
+    el("answers").appendChild(button);
+  });
+  updateMeter();
+}
+function choose(choice){
+  if(answered)return;
+  answered=true;
+  const q=questions[current];
+  const correct=choice===q.correct;
+  if(correct)points++;
+  [...el("answers").children].forEach((btn,i)=>{
+    btn.disabled=true;
+    if(i===q.correct)btn.classList.add("correct");
+    if(i===choice&&!correct)btn.classList.add("wrong");
+  });
+  el("feedback").textContent=(correct?"✅ Correct! ":"💡 Not quite. ")+q.explanation;
+  el("feedback").className="feedback "+(correct?"success":"fail");
+  el("next").disabled=false;
+  el("score").textContent=points+" / "+questions.length;
+}
+function updateMeter(){
+  const answeredCount=Math.min(current,questions.length);
+  el("bar").style.width=(answeredCount/questions.length*100)+"%";
+  el("meter").setAttribute("aria-valuenow",String(answeredCount));
+}
+function advance(){
+  if(!answered)return;
+  current++;
+  if(current>=questions.length){showResults();return;}
+  renderQuestion();
+}
+function showResults(){
+  el("questionScreen").classList.add("hidden");
+  el("finished").classList.remove("hidden");
+  el("bar").style.width="100%";
+  el("meter").setAttribute("aria-valuenow","20");
+  el("progress").textContent="All 20 questions completed!";
+  el("finishTitle").textContent=points===20?"🏆 PERFECT SCORE, EXPLORER!":points>=15?"🌟 Final Boss Defeated!":"🚀 Boss Battle Complete!";
+  el("finishDetails").textContent="You scored "+points+" out of 20. "+(points===20?"Amazing! You've mastered every question.":"Review the explanations and try again to improve your score.");
+}
+function restartQuiz(){current=0;points=0;answered=false;el("score").textContent="0 / 20";renderQuestion();}
+function buildPlan(){
+  const name=el("logoName").value.trim().slice(0,40)||"My Logo";
+  const s=Number(el("sides").value);
+  if(!Number.isInteger(s)||s<3||s>12){el("plan").textContent="Choose a whole number of sides from 3 to 12.";return;}
+  const colour=el("colour").value;
+  const angle=(360/s).toFixed(2);
+  planText=["PROJECT: "+name,"Colour theme: "+colour,"Regular polygon sides: "+s,"Turn after each side: "+angle+" degrees","","BUILD PLAN","1. Import turtle and create a pen.","2. Set your pen and fill colours.","3. Repeat drawing a side "+s+" times with a for loop.","4. Turn "+angle+" degrees after each side.","5. Test, improve and explain your logo."].join(String.fromCharCode(10));
+  el("plan").textContent=planText;el("copyMsg").textContent="";
+}
+async function copyPlan(){
+ if(!planText){el("copyMsg").textContent="Generate your plan first.";return;}
+ try{if(!navigator.clipboard)throw new Error("No clipboard access");await navigator.clipboard.writeText(planText);el("copyMsg").textContent="Copied your plan!";}
+ catch{el("copyMsg").textContent="Select the text above and copy it manually.";}
+}
+function updateTicks(){
+ const ticks=[...document.querySelectorAll(".tick")];
+ const checked=ticks.filter(t=>t.checked).length;
+ el("checkStatus").textContent=checked+" of "+ticks.length+" steps completed."+(checked===ticks.length?" Excellent work! 🎉":"");
+}
+el("next").addEventListener("click",advance);
+el("restart").addEventListener("click",restartQuiz);
+el("playAgain").addEventListener("click",restartQuiz);
+el("makePlan").addEventListener("click",buildPlan);
+el("copyPlan").addEventListener("click",copyPlan);
+document.querySelectorAll(".tick").forEach(t=>t.addEventListener("change",updateTicks));
+renderQuestion();
+</script>
+</body>
+</html>
 
