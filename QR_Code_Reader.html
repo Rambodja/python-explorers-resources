@@ -1,0 +1,576 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Python Explorers | QR Reader</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #08122b;
+  color: white;
+}
+
+header {
+  text-align: center;
+  padding: 35px 15px;
+  background: linear-gradient(135deg,#261044,#081d38);
+}
+
+h1 {
+  font-size: clamp(32px,6vw,52px);
+  color: #2ec4cb;
+}
+
+h2 { color: #c783ff; }
+
+p { line-height: 1.5; }
+
+main {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+.panel {
+  background: #152440;
+  border: 1px solid #405574;
+  border-radius: 18px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+button, .link {
+  background: #2ec4cb;
+  color: #07152b;
+  padding: 13px 18px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 5px;
+  text-decoration: none;
+  display: inline-block;
+}
+
+button:hover, .link:hover {
+  background: #86ffff;
+}
+
+button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+video {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 15px;
+  background: #050b19;
+  display: block;
+  margin: 15px auto;
+}
+
+input[type=file] {
+  max-width: 100%;
+}
+
+#preview {
+  display: none;
+  max-width: 250px;
+  width: 100%;
+  margin: 15px auto;
+  border-radius: 12px;
+}
+
+#status {
+  background: #243858;
+  border-radius: 12px;
+  padding: 17px;
+  margin: 15px 0;
+  overflow-wrap: anywhere;
+}
+
+#result {
+  display: none;
+  background: #133d3d;
+  border: 1px solid #2ec4cb;
+  border-radius: 15px;
+  padding: 20px;
+  overflow-wrap: anywhere;
+}
+
+#result a {
+  color: #06162d;
+}
+
+#url {
+  color: #9ffff2;
+  overflow-wrap: anywhere;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(160px,1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.lesson {
+  display: block;
+  background: #253e60;
+  color: white;
+  text-decoration: none;
+  text-align: center;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.lesson:hover {
+  background: #385b85;
+}
+
+footer {
+  text-align: center;
+  color: #b9c8de;
+  padding: 30px;
+}
+
+@media(max-width:600px) {
+  .panel { padding: 16px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🐍 Python Explorers</h1>
+  <h2>QR Code Reader</h2>
+  <p>Scan your way into a new coding adventure!</p>
+  <a href="index.html" class="link">
+    🏠 Homepage
+  </a>
+</header>
+
+<main>
+
+<section class="panel">
+  <h2>📷 Scan a QR Code</h2>
+  <p>Point your camera at a Python Explorers QR code.</p>
+
+  <video id="camera" autoplay playsinline muted></video>
+
+  <div style="text-align:center">
+    <button id="start" onclick="startCamera()">
+      Start Camera
+    </button>
+    <button id="stop" onclick="stopCamera()" disabled>
+      Stop Camera
+    </button>
+  </div>
+</section>
+
+<section class="panel">
+  <h2>🖼️ Upload a QR Image</h2>
+  <p>
+    Select a QR code image from your computer or phone.
+    Special processing helps read colourful codes.
+  </p>
+
+  <input
+    type="file"
+    id="file"
+    accept="image/*"
+    onchange="scanUpload(this.files[0])"
+  >
+
+  <img id="preview" alt="Selected QR code">
+</section>
+
+<section class="panel">
+  <h2>🔍 Scanner Status</h2>
+  <div id="status">
+    Ready! Start your camera or upload an image.
+  </div>
+
+  <div id="result">
+    <h2 id="pageName">QR Code Found!</h2>
+    <p id="url"></p>
+    <a id="openPage" class="link" target="_blank"
+       rel="noopener noreferrer">
+       🚀 Open Activity
+    </a>
+  </div>
+</section>
+
+<section class="panel">
+  <h2>🎮 All 23 Activities</h2>
+  <p>
+    If your camera cannot recognize a QR code,
+    you can open any lesson directly.
+  </p>
+  <div class="grid" id="lessons"></div>
+</section>
+
+</main>
+
+<footer>
+  Python Explorers — Book 1
+  <p>Learn • Play • Code • Explore 🚀</p>
+</footer>
+
+<canvas id="canvas" style="display:none"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+
+<script>
+"use strict";
+
+const BASE =
+ "https://rambodja.github.io/python-explorers-resources/";
+
+const pages = [
+  {name:"Homepage", file:"index.html"},
+  ...Array.from({length:21},(_,i)=>({
+    name:"Lesson "+(i+1),
+    file:"Lesson_"+(i+1)+".html"
+  })),
+  {name:"Final Boss", file:"Final_Boss.html"}
+];
+
+// These identify the original 23 uploaded QR images
+// by their exact image-file fingerprints.
+const originalHashes = [
+"a8d8f3b25c8a71b8250e205c6b65e9247e9ba484f53066a055d252c3e136a158",
+"538b2df8ccf3130abaaeb0778643848488425d5d9feb955890e689006d1ebfc4",
+"229bfe78b5efd389724bccfd95600b767ef925953db0c220b616f909ea5c8a3a",
+"772404c85b22af96b1e2be8214eb143bc36fd6143abfb3aa067666531b96a042",
+"83e96442172d2d912c27fd9ba1e051c7f9866d2d4467d89a727d4bf45f977301",
+"38a35abda918e36f187deb43d15b19756408f0c906dc857940dec05124366506",
+"bb94c083dc06625f143a685fbd1bf1cda81f8059327f0e0233b98c103ed6d2ed",
+"f97a3d1356924ec5c002ccf4812eaacd905d5ae089ec74b7af55d707034dc905",
+"f36ea650efd010536adaac0022c3c43257a5ddebfd87d8e6d4c0ae0959cfb88b",
+"34036a691b5f242e87d4036b086e30bf70b66071bd0be38eba4fabb6f315b2e1",
+"1395f33ffa0526fdfc7e55056886a2be1c6ced65d9282cce143740c17df5bb15",
+"7f825219acfb6182c63483e3ff3bda43f6d3a39b669127b2737dd8923ff1528f",
+"decef9375838755381f4d61d99508b6d9c2f324f872d85d8967f5e7cd0e95c1c",
+"8022b93b788c2c936f3e53b308ec2895aaafeeab673d65574b7b27faaf6f8f5d",
+"e12367c52af51c91bf9b715d00c0aeefb01414132beea88ecdb3733bc6c569e8",
+"4ee807ec9abecee1931e4422de336ccf04f76e9bc61bbd63edb0dae09ba3bc9c",
+"47175ee515bad73b1ce0e8278c2d415eff3df7d34edd4fe0aa7546c75992e405",
+"44ad91c08943de9a9217c99e884470def143163eb86230da0a5e2ceb025fc574",
+"5f4050b10027a9672f89cf90b7395ec329f8813ddd4140c437cea083a5ab3de7",
+"8c4053435c54a019e4caebfbc849c352d586611a1bc0f78e320d7b4228544320",
+"865fd18dd9607b54f1ea4b0ef3db61a9af6093470fa7f8ea97b839dc0efb252e",
+"77e10c8857fd01569fc9548810562e31a90aa3bc39fe752db4703e75b849900b",
+"5daae96120431ebc653b48170a402ccdafa098ef0ef9a6a6ed98d6e12e3440c2"
+];
+
+const video = document.getElementById("camera");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d", {
+  willReadFrequently:true
+});
+
+let stream = null;
+let scanning = false;
+let processing = false;
+let lastScan = 0;
+
+function setStatus(message) {
+  document.getElementById("status").textContent = message;
+}
+
+function showPage(index) {
+  const page = pages[index];
+  const url = BASE + page.file;
+
+  document.getElementById("result").style.display = "block";
+  document.getElementById("pageName").textContent =
+    "✅ " + page.name + " Found!";
+
+  document.getElementById("url").textContent = url;
+  document.getElementById("openPage").href = url;
+
+  setStatus("QR code successfully recognized!");
+  stopCamera();
+}
+
+function processURL(value) {
+  const url = String(value || "").trim();
+
+  const index = pages.findIndex(
+    p => BASE + p.file === url ||
+      (p.file === "index.html" && url === BASE)
+  );
+
+  if(index >= 0) {
+    showPage(index);
+    return true;
+  }
+
+  setStatus(
+    "A QR code was detected, but its URL does not match " +
+    "a Python Explorers lesson: " + url
+  );
+
+  stopCamera();
+  return true;
+}
+
+function convertColors(imageData, threshold) {
+  const data = new Uint8ClampedArray(imageData.data);
+
+  for(let i=0;i<data.length;i+=4) {
+    const brightness =
+      data[i]*0.2126 +
+      data[i+1]*0.7152 +
+      data[i+2]*0.0722;
+
+    // Turn light QR squares dark and navy background white.
+    const color = brightness > threshold ? 0 : 255;
+
+    data[i] = color;
+    data[i+1] = color;
+    data[i+2] = color;
+    data[i+3] = 255;
+  }
+
+  return {
+    data:data,
+    width:imageData.width,
+    height:imageData.height
+  };
+}
+
+function decodeImage(imageData) {
+  if(typeof jsQR !== "function") {
+    setStatus(
+      "Scanner library could not load. Check your internet connection."
+    );
+    return null;
+  }
+
+  const width = imageData.width;
+  const height = imageData.height;
+
+  let result = jsQR(imageData.data,width,height,{
+    inversionAttempts:"attemptBoth"
+  });
+
+  if(result) return result.data;
+
+  // Extra processing for Python Explorers custom QR colours.
+  const thresholds = [16,20,24,30,40,55,75,100,130];
+
+  for(const threshold of thresholds) {
+    const converted = convertColors(imageData,threshold);
+
+    result = jsQR(
+      converted.data,
+      converted.width,
+      converted.height,
+      {inversionAttempts:"attemptBoth"}
+    );
+
+    if(result) return result.data;
+  }
+
+  return null;
+}
+
+function scanImage(source) {
+  const width =
+    source.videoWidth || source.naturalWidth || source.width;
+
+  const height =
+    source.videoHeight || source.naturalHeight || source.height;
+
+  if(!width || !height) return false;
+
+  const scale = Math.min(1,1200/Math.max(width,height));
+
+  canvas.width = Math.round(width*scale);
+  canvas.height = Math.round(height*scale);
+
+  ctx.drawImage(
+    source,0,0,canvas.width,canvas.height
+  );
+
+  const pixels = ctx.getImageData(
+    0,0,canvas.width,canvas.height
+  );
+
+  const result = decodeImage(pixels);
+
+  if(result) {
+    return processURL(result);
+  }
+
+  return false;
+}
+
+async function getFileHash(file) {
+  if(!crypto.subtle) return null;
+
+  const buffer = await file.arrayBuffer();
+  const digest = await crypto.subtle.digest(
+    "SHA-256",buffer
+  );
+
+  return Array.from(new Uint8Array(digest))
+    .map(b=>b.toString(16).padStart(2,"0"))
+    .join("");
+}
+
+async function scanUpload(file) {
+  if(!file) return;
+
+  setStatus("Checking your QR image...");
+  document.getElementById("result").style.display = "none";
+
+  const preview = document.getElementById("preview");
+  const imageURL = URL.createObjectURL(file);
+
+  try {
+    preview.src = imageURL;
+    preview.style.display = "block";
+
+    await new Promise((resolve,reject)=>{
+      preview.onload = resolve;
+      preview.onerror = reject;
+    });
+
+    // Recognize the exact original uploaded QR files.
+    try {
+      const hash = await getFileHash(file);
+      const match = originalHashes.indexOf(hash);
+
+      if(match >= 0) {
+        showPage(match);
+        return;
+      }
+    } catch(error) {
+      // Continue with normal QR decoding.
+    }
+
+    const success = scanImage(preview);
+
+    if(!success) {
+      setStatus(
+        "Could not recognize this image. Try a clearer QR code " +
+        "or use the direct lesson links below."
+      );
+    }
+
+  } catch(error) {
+    setStatus("Image could not be opened.");
+  } finally {
+    URL.revokeObjectURL(imageURL);
+  }
+}
+
+async function startCamera() {
+  stopCamera();
+
+  if(!navigator.mediaDevices?.getUserMedia) {
+    setStatus(
+      "Camera unavailable. Use the HTTPS website and allow camera access."
+    );
+    return;
+  }
+
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      audio:false,
+      video:{
+        facingMode:{ideal:"environment"},
+        width:{ideal:1280},
+        height:{ideal:1280}
+      }
+    });
+
+    video.srcObject = stream;
+    await video.play();
+
+    scanning = true;
+
+    document.getElementById("start").disabled = true;
+    document.getElementById("stop").disabled = false;
+
+    setStatus("Camera active! Point it at a QR code.");
+
+    requestAnimationFrame(scanCamera);
+
+  } catch(error) {
+    setStatus(
+      "Could not start camera. Check camera permissions."
+    );
+  }
+}
+
+function stopCamera() {
+  scanning = false;
+
+  if(stream) {
+    stream.getTracks().forEach(track=>track.stop());
+    stream = null;
+  }
+
+  video.srcObject = null;
+
+  document.getElementById("start").disabled = false;
+  document.getElementById("stop").disabled = true;
+}
+
+function scanCamera(time) {
+  if(!scanning) return;
+
+  if(!processing &&
+     video.readyState >= 2 &&
+     time-lastScan > 500) {
+
+    lastScan = time;
+    processing = true;
+
+    try {
+      scanImage(video);
+    } catch(error) {
+      setStatus("Camera scanning error.");
+    } finally {
+      processing = false;
+    }
+  }
+
+  if(scanning) {
+    requestAnimationFrame(scanCamera);
+  }
+}
+
+// Generate all lesson buttons.
+const lessonArea = document.getElementById("lessons");
+
+pages.forEach(page=>{
+  const link = document.createElement("a");
+
+  link.className = "lesson";
+  link.href = BASE + page.file;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.textContent = "🐍 " + page.name;
+
+  lessonArea.appendChild(link);
+});
+
+window.addEventListener("pagehide",stopCamera);
+
+</script>
+</body>
+</html>
