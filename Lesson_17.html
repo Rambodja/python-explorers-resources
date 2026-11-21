@@ -1,1 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Python Explorers Book 1, Lesson 17: interactive strings, indexing, slicing, formatting and debugging practice.">
+  <meta name="theme-color" content="#0c1530">
+  <title>Lesson 17 — Understanding Strings | Python Explorers</title>
+  <style>
 
+:root { color-scheme:dark; --bg:#0b1125; --panel:#1a2540; --border:#46597d; --cyan:#84eef4; --pink:#fa9ae0; --green:#80ecc7; --text:#f4f8ff; --muted:#c3cee3; }
+* { box-sizing:border-box; }
+body { margin:0; background:radial-gradient(ellipse at 0 0,#442462,var(--bg) 60%); color:var(--text); font:16px/1.55 system-ui,Segoe UI,Arial,sans-serif; }
+header { text-align:center; padding:42px 16px 20px; }
+h1 { color:var(--cyan); line-height:1.1; font-size:clamp(29px,5.5vw,54px); margin:10px auto; max-width:850px; }
+h2 { color:var(--pink); margin:4px 0 12px; }
+h3 { margin:16px 0 8px; }
+.eyebrow { font-weight:800; color:var(--pink); letter-spacing:.12em; font-size:12px; text-transform:uppercase; }
+.muted { color:var(--muted); }
+a { color:var(--cyan); }
+main { max-width:900px; margin:auto; padding:14px 16px 50px; }
+section { background:var(--panel); border:1px solid var(--border); border-radius:18px; padding:clamp(18px,4vw,28px); margin:18px 0; }
+pre { background:#0a142a; border:1px solid #354c70; color:#bdfae4; border-radius:12px; padding:17px; white-space:pre-wrap; overflow-wrap:anywhere; font:15px/1.55 Consolas,monospace; }
+button { cursor:pointer; background:#34456d; color:white; border:1px solid #7086aa; padding:12px 15px; margin:5px 4px 5px 0; border-radius:10px; font:inherit; font-weight:700; }
+button.primary { background:var(--cyan); color:#091729; border-color:var(--cyan); }
+button:hover:not(:disabled),a.button:hover { filter:brightness(1.17); }
+button:disabled { cursor:not-allowed; opacity:.53; }
+button:focus-visible,input:focus-visible,a:focus-visible { outline:3px solid var(--pink); outline-offset:2px; }
+.correct { background:#11644c!important; border-color:var(--green)!important; opacity:1!important; }
+.wrong { background:#7b364a!important; border-color:#ff9ab0!important; opacity:1!important; }
+.notice { min-height:49px; background:#283954; border-radius:10px; padding:13px; margin:11px 0; }
+.score { font-size:32px; color:var(--green); font-weight:800; }
+.meter,.track { height:12px; border-radius:100px; background:#374666; overflow:hidden; margin:14px 0; }
+.meter div,.track>div { height:100%; width:0; background:linear-gradient(90deg,var(--pink),var(--cyan)); transition:width .2s; }
+.game-label,.pill { color:var(--cyan); font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+.nav { display:flex; justify-content:center; flex-wrap:wrap; gap:10px; margin-top:16px; }
+.nav a { color:#9aeefa; text-decoration:none; border:1px solid #657ba0; border-radius:100px; padding:8px 13px; background:transparent; font-weight:500; }
+.nav a:hover { background:#2b3e66; }
+label { display:block; margin:12px 0 6px; font-weight:bold; }
+input { background:#111e35; color:white; border:1px solid #7487a5; border-radius:10px; padding:12px; font:inherit; max-width:100%; }
+.flex,.actions { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+footer { text-align:center; color:var(--muted); padding:28px 16px; border-top:1px solid #384b70; }
+@media(max-width:600px) { .choices,.options,.grid { grid-template-columns:1fr!important; } }
+@media(prefers-reduced-motion:reduce) { .meter div,.track>div{transition:none} }
+
+.wrap { max-width:900px; margin:auto; padding-left:16px; padding-right:16px; }
+header.wrap { max-width:none; }
+main.wrap { max-width:900px; }
+.card { background:var(--panel); border:1px solid var(--border); border-radius:18px; padding:clamp(18px,4vw,28px); margin:18px 0; box-shadow:none; }
+.grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; }
+.note { background:#263954; border-left:4px solid var(--cyan); padding:13px 16px; border-radius:9px; }
+pre,code { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; }
+input#stringInput { width:100%; }
+.output { background:#0a142a; border:1px solid #354c70; color:#bdfae4; border-radius:12px; padding:17px; margin-top:13px; white-space:pre-wrap; overflow-wrap:anywhere; font:15px/1.55 Consolas,monospace; min-height:85px; }
+.pill { display:inline-block; margin-bottom:9px; }
+.options { display:grid; grid-template-columns:repeat(auto-fit,minmax(225px,1fr)); gap:6px 12px; margin:14px 0; }
+.options button { text-align:left; white-space:pre-wrap; overflow-wrap:anywhere; width:100%; min-height:55px; }
+.feedback { min-height:49px; background:#283954; border-radius:10px; padding:13px; margin:11px 0; }
+.counter { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:10px; font-weight:700; }
+.hidden { display:none!important; }
+a.button { display:inline-block; cursor:pointer; color:#9aeefa; border:1px solid #657ba0; border-radius:100px; padding:8px 13px; text-decoration:none; background:transparent; font-weight:650; }
+.actions a.button { background:var(--cyan); border:1px solid var(--cyan); border-radius:10px; padding:12px 15px; color:#091729; }
+.actions a.button.secondary { background:#34456d; border-color:#7086aa; color:white; }
+.nav a.button,.nav a.button.secondary { background:transparent; border:1px solid #657ba0; border-radius:100px; color:#9aeefa; padding:8px 13px; font-weight:500; }
+.nav a.button:hover { background:#2b3e66; }
+button.secondary { background:#34456d; border-color:#7086aa; }
+
+</style>
+</head>
+<body>
+  <header class="wrap">
+    <div class="eyebrow">🐍 PYTHON EXPLORERS — BOOK 1</div>
+    <h1>Lesson 17: Understanding Strings</h1>
+    <p class="muted">Predict outputs · Fix strings · Try an interactive text lab</p>
+    <nav class="nav" aria-label="Lesson navigation">
+      <a class="button secondary" href="index.html">⌂ All Lessons</a>
+      <a class="button secondary" href="Lesson_16.html">← Lesson 16</a>
+      <a class="button secondary" href="Lesson_18.html">Lesson 18 →</a>
+    </nav>
+  </header>
+  <main class="wrap">
+    <section class="card">
+      <h2>📖 Quick lesson: Strings</h2>
+      <p>A <strong>string</strong> is a sequence of characters. Python uses quotes to mark text. Characters have positions called <em>indices</em>, starting at <strong>0</strong>.</p>
+      <div class="grid">
+        <div>
+          <h3>Indexing and slicing</h3>
+          <pre>word = "banana"
+print(word[0])   # b
+print(word[-1])  # a
+print(word[1:4]) # ana
+print(word[::-1])# ananab</pre>
+        </div>
+        <div>
+          <h3>Changing text safely</h3>
+          <pre>name = "Rambod"
+# name[0] = "H"  # Error!
+new_name = "H" + name[1:]
+print(new_name)  # Hambod
+print(f"Hello, {name}!")</pre>
+        </div>
+      </div>
+      <p class="note">Remember: strings are <strong>immutable</strong>. You cannot replace one character in the original string. Create a new string instead.</p>
+    </section>
+    <section class="card" aria-labelledby="lab-title">
+      <div class="game-label">BONUS INTERACTIVE MINI-GAME</div>
+      <h2 id="lab-title">🔬 Explore a string</h2>
+      <p>Type anything and see how Python-style string operations would work. This is a learning demo, not an online Python interpreter.</p>
+      <label for="stringInput">Enter your string</label>
+      <input id="stringInput" value="Rambod" maxlength="80" autocomplete="off" spellcheck="false">
+      <div id="stringOutput" class="output" role="status" aria-live="polite"></div>
+      <p class="muted" style="font-size:.9rem;margin-top:12px">Try <code>banana</code>, <code>level</code>, <code>PYTHON</code>, and an empty input. Notice how negative indices and reversals behave.</p>
+    </section>
+    <section class="card" aria-labelledby="quiz-title">
+      <div class="game-label">STRING QUEST — 14 QUESTIONS</div>
+      <h2 id="quiz-title">🎮 String Quest</h2>
+      <div class="counter"><span id="questionCounter">Question 1 of 14</span><span id="scoreCounter">Score: 0 / 14</span></div>
+      <div class="track" role="progressbar" aria-label="Quiz questions completed" aria-valuemin="0" aria-valuemax="14" aria-valuenow="0" id="progress"><div id="progressBar"></div></div>
+      <div id="quizScreen">
+        <p id="topic" class="pill" style="margin-top:18px"></p>
+        <h3 id="questionText"></h3>
+        <pre id="codeExample" class="hidden"></pre>
+        <div class="options" id="answers"></div>
+        <div id="feedback" class="feedback" role="status" aria-live="polite">Choose the correct answer!</div>
+        <div class="actions"><button id="nextQuestion" disabled>Next question →</button><button id="restartQuiz" class="secondary">Start again ↻</button></div>
+      </div>
+      <div id="quizFinished" class="hidden" role="status" aria-live="polite">
+        <h3>🏆 String Quest complete!</h3><p id="finalScore"></p>
+        <button id="playAgain">Play again ↻</button>
+      </div>
+    </section>
+    <section class="card" aria-labelledby="challenge-title">
+      <div class="game-label">BONUS BUG CHALLENGE</div>
+      <h2 id="challenge-title">🐛 Find the bug</h2>
+      <p>Here is a broken program:</p>
+      <pre>name = "Rambod"
+name[0] = "H"
+print(name)</pre>
+      <p><strong>What is the best fix?</strong></p>
+      <div class="options" id="fixAnswers">
+        <button data-fix="0">Change the quotes to single quotes</button>
+        <button data-fix="1">Create <code>new_name = "H" + name[1:]</code></button>
+        <button data-fix="2">Change <code>name[0]</code> to <code>name[1]</code></button>
+        <button data-fix="3">Remove the <code>print()</code> line</button>
+      </div>
+      <div id="fixFeedback" class="feedback" role="status" aria-live="polite">Pick the change that fixes the error.</div>
+    </section>
+    <section class="card">
+      <h2>🚀 Ready for an extra challenge?</h2>
+      <p>In your own Python editor, try checking if a word is a palindrome, counting how many times <code>a</code> appears, and printing every non-empty substring of a short word.</p>
+      <div class="actions"><a href="Lesson_18.html" class="button">Continue to Lesson 18 →</a><a href="index.html" class="button secondary">Back to lesson index</a></div>
+    </section>
+  </main>
+  <footer>Python Explorers — Book 1 · Lesson 17: Understanding Strings · Learn • Try • Build</footer>
+  <script>
+    'use strict';
+    const $ = id => document.getElementById(id);
+    function showStringInfo(){
+      const value = $('stringInput').value;
+      const chars = Array.from(value); // Approximate Python indexing for Unicode text.
+      const first = chars.length ? JSON.stringify(chars[0]) : '(none — empty string)';
+      const last = chars.length ? JSON.stringify(chars[chars.length-1]) : '(none — empty string)';
+      const lines = [
+        'text = ' + JSON.stringify(value),
+        'len(text) → ' + chars.length,
+        'text[0] → ' + first,
+        'text[-1] → ' + last,
+        'text[1:4] → ' + JSON.stringify(chars.slice(1,4).join('')),
+        'text[::-1] → ' + JSON.stringify(chars.slice().reverse().join('')),
+        '"a" in text → ' + (value.includes('a') ? 'True':'False'),
+        'text.upper() → ' + JSON.stringify(value.toUpperCase())
+      ];
+      $('stringOutput').textContent = lines.join('\n');
+    }
+    $('stringInput').addEventListener('input',showStringInfo);
+    showStringInfo();
+
+    const questions = [
+      {t:'String basics',q:'Which one is a Python string?',c:'',a:['42','"42"','True','3.14'],ok:1,why:'Quotes make "42" text rather than a number.'},
+      {t:'Length',q:'What does this print?',c:'print(len("apple"))',a:['4','5','6','Error'],ok:1,why:'There are five characters in apple.'},
+      {t:'Indexing',q:'What does this print?',c:'print("hello"[0])',a:['h','e','o','0'],ok:0,why:'Python starts counting indices at zero.'},
+      {t:'Negative indices',q:'What does this print?',c:'print("hello"[-1])',a:['h','l','o','Error'],ok:2,why:'Index -1 refers to the final character.'},
+      {t:'Slicing',q:'What does this print?',c:'print("banana"[1:4])',a:['ban','anan','ana','nana'],ok:2,why:'Take indices 1, 2 and 3. The stop index 4 is excluded.'},
+      {t:'Slicing with steps',q:'What does this print?',c:'print("banana"[::2])',a:['bnn','aaa','banana','bana'],ok:0,why:'Every second character from index 0 is b, n, n.'},
+      {t:'Reversing a string',q:'What does this print?',c:'print("Python"[::-1])',a:['Python','Pto','nohtyP','nothyp'],ok:2,why:'A step of -1 walks backward through the text.'},
+      {t:'Membership',q:'What is the result?',c:'"a" in "Rambod"',a:['True','False','None','Error'],ok:0,why:'The lowercase letter a appears in Rambod.'},
+      {t:'Case sensitivity',q:'What is the result?',c:'"A" in "Rambod"',a:['True','False','None','Error'],ok:1,why:'Uppercase A is not the same as lowercase a.'},
+      {t:'Immutable strings',q:'What happens when this runs?',c:'name = "Rambod"\nname[0] = "H"',a:['Prints Hambod','Changes the original text','Raises TypeError','Prints Rambod'],ok:2,why:'You cannot assign a replacement character into an existing string.'},
+      {t:'Build a new string',q:'What does this print?',c:'name = "Rambod"\nprint("H" + name[1:])',a:['Hambod','HRambod','H','Error'],ok:0,why:'name[1:] is ambod, so adding H creates Hambod.'},
+      {t:'f-strings',q:'What does this print?',c:'name = "Rambod"\nprint(f"Hi, {name}!")',a:['Hi, {name}!','Hi, Rambod!','fHi, Rambod!','Error'],ok:1,why:'An f-string inserts the variable value inside braces.'},
+      {t:'format()',q:'What does this print?',c:'print("{}!".format("Hello"))',a:['{}!','Hello','Hello!','Error'],ok:2,why:'.format() fills the braces with its argument.'},
+      {t:'String challenges',q:'Which word reads the same forward and backward?',c:'',a:['python','coding','level','banana'],ok:2,why:'The word level is a palindrome.'}
+    ];
+    let index=0, score=0, answered=false;
+    function renderQuestion(){
+      if(index>=questions.length){
+        $('quizScreen').classList.add('hidden');
+        $('quizFinished').classList.remove('hidden');
+        $('finalScore').textContent='You scored '+score+' out of '+questions.length+'. '+(score===questions.length?'Perfect score!': 'Try again to improve your score.');
+        $('questionCounter').textContent='Finished!';
+        $('progressBar').style.width='100%';
+        $('progress').setAttribute('aria-valuenow',String(questions.length));
+        return;
+      }
+      const data=questions[index]; answered=false;
+      $('questionCounter').textContent='Question '+(index+1)+' of '+questions.length;
+      $('scoreCounter').textContent='Score: '+score+' / '+questions.length;
+      $('progressBar').style.width=(index/questions.length*100)+'%';
+      $('progress').setAttribute('aria-valuenow',String(index));
+      $('topic').textContent=data.t;
+      $('questionText').textContent=data.q;
+      $('codeExample').textContent=data.c;
+      $('codeExample').classList.toggle('hidden',!data.c);
+      $('feedback').textContent='Choose the correct answer!';
+      $('nextQuestion').disabled=true;
+      $('nextQuestion').textContent=index===questions.length-1?'See results →':'Next question →';
+      $('answers').replaceChildren();
+      data.a.forEach((label,i)=>{
+        const b=document.createElement('button');b.type='button';b.textContent=label;
+        b.addEventListener('click',()=>{
+          if(answered)return;
+          answered=true;
+          if(i===data.ok){score++;b.classList.add('correct');$('feedback').textContent='✅ Correct! '+data.why;}
+          else {b.classList.add('wrong');$('feedback').textContent='Not quite. '+data.why;}
+          Array.from($('answers').children).forEach((btn,n)=>{btn.disabled=true;if(n===data.ok)btn.classList.add('correct');});
+          $('scoreCounter').textContent='Score: '+score+' / '+questions.length;
+          $('nextQuestion').disabled=false;
+        });
+        $('answers').appendChild(b);
+      });
+    }
+    function resetQuiz(){index=0;score=0;$('quizScreen').classList.remove('hidden');$('quizFinished').classList.add('hidden');renderQuestion();}
+    $('nextQuestion').addEventListener('click',()=>{if(!answered)return;index++;renderQuestion();});
+    $('restartQuiz').addEventListener('click',resetQuiz);
+    $('playAgain').addEventListener('click',resetQuiz);
+    Array.from($('fixAnswers').children).forEach(b=>b.addEventListener('click',()=>{
+      const correct=b.dataset.fix==='1';
+      $('fixFeedback').textContent=correct?'✅ Exactly! Strings are immutable. Build a new string with "H" + name[1:].':'Try again. Replacing a character in an existing string causes a TypeError; create a new string.';
+      Array.from($('fixAnswers').children).forEach(button=>button.classList.toggle('correct',button.dataset.fix==='1'&&correct));
+    }));
+    renderQuestion();
+  </script>
+</body>
+</html>
